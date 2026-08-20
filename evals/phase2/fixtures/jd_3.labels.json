@@ -1,0 +1,12 @@
+{
+  "type": "requirements",
+  "fields": {
+    "title": { "kind": "contains", "value": "Senior Frontend Engineer" },
+    "company": { "kind": "scalar", "value": "Nimbus Software" },
+    "location": { "kind": "contains", "value": "New York" },
+    "seniority": { "kind": "enum", "value": "senior" },
+    "min_years_experience": { "kind": "numeric", "value": 5, "tol": 0 },
+    "required_skills": { "kind": "list", "value": ["React", "TypeScript", "CSS", "Accessibility"] },
+    "education_requirement": { "kind": "contains", "value": "Bachelor" }
+  }
+}

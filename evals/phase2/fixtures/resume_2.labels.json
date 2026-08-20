@@ -1,0 +1,13 @@
+{
+  "type": "profile",
+  "fields": {
+    "name": { "kind": "scalar", "value": "Raj Patel" },
+    "email": { "kind": "scalar", "value": "raj.patel@example.com" },
+    "location": { "kind": "contains", "value": "Austin" },
+    "seniority": { "kind": "enum", "value": "junior" },
+    "years_experience": { "kind": "numeric", "value": 2, "tol": 1 },
+    "skills": { "kind": "list", "value": ["Python", "SQL", "scikit-learn", "XGBoost", "Pandas", "Docker"] },
+    "companies": { "kind": "list", "value": ["DataWorks"] },
+    "institutions": { "kind": "list", "value": ["University of Texas at Austin"] }
+  }
+}

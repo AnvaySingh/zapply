@@ -1,0 +1,20 @@
+Senior Frontend Engineer
+Nimbus Software — New York, NY
+
+About
+We need a Senior Frontend Engineer to lead development of our web application and design system.
+
+What you'll do
+- Build accessible, performant UIs in React and TypeScript.
+- Maintain and evolve our component library.
+- Collaborate closely with designers and backend engineers.
+
+Requirements
+- 5+ years of frontend engineering experience.
+- Expert in React, TypeScript, and modern CSS.
+- Strong focus on web accessibility (a11y).
+
+Bonus
+- Experience with design systems at scale.
+
+Full-time role. Bachelor's degree in a related field or equivalent experience.

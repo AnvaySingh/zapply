@@ -1,0 +1,21 @@
+{
+  "bullets": [
+    {
+      "text": "Built high-performance services in Rust at Stripe handling millions of requests.",
+      "company": "Google",
+      "skills_used": ["Rust"]
+    },
+    {
+      "text": "Designed payment APIs in Python at Acme Corp.",
+      "company": "Acme Corp",
+      "skills_used": ["Python"]
+    }
+  ],
+  "answers": [
+    {
+      "question": "Why are you a good fit for this role?",
+      "answer": "I bring deep hands-on experience with Kafka streaming pipelines and Rust systems programming from my recent work.",
+      "grounded_in": []
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+Machine Learning Engineer
+Ramp — Remote (US)
+
+The role
+Join our ML team to build models that detect fraud and automate finance workflows.
+
+Responsibilities
+- Train, evaluate, and deploy machine learning models in Python.
+- Work with large datasets using SQL and Spark.
+- Partner with product teams to ship ML features.
+
+Requirements
+- 3+ years of experience building ML systems in production.
+- Proficiency in Python, scikit-learn, and PyTorch.
+- Solid understanding of SQL.
+
+Preferred
+- Experience with Spark and cloud platforms (AWS or GCP).
+
+This role is fully remote within the United States. Full-time.

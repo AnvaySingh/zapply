@@ -1,0 +1,13 @@
+{
+  "type": "profile",
+  "fields": {
+    "name": { "kind": "scalar", "value": "Jane Doe" },
+    "email": { "kind": "scalar", "value": "jane.doe@example.com" },
+    "location": { "kind": "contains", "value": "San Francisco" },
+    "seniority": { "kind": "enum", "value": "senior" },
+    "years_experience": { "kind": "numeric", "value": 7, "tol": 1 },
+    "skills": { "kind": "list", "value": ["Python", "Go", "PostgreSQL", "Kubernetes", "AWS", "Redis"] },
+    "companies": { "kind": "list", "value": ["Acme Corp", "Beta Inc"] },
+    "institutions": { "kind": "list", "value": ["Massachusetts Institute of Technology"] }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "requirements",
+  "fields": {
+    "title": { "kind": "contains", "value": "Machine Learning Engineer" },
+    "company": { "kind": "scalar", "value": "Ramp" },
+    "remote": { "kind": "scalar", "value": "True" },
+    "min_years_experience": { "kind": "numeric", "value": 3, "tol": 0 },
+    "required_skills": { "kind": "list", "value": ["Python", "scikit-learn", "PyTorch", "SQL"] },
+    "employment_type": { "kind": "contains", "value": "Full-time" }
+  }
+}

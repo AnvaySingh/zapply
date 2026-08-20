@@ -1,0 +1,30 @@
+{
+  "profile": {
+    "name": "Jane Doe",
+    "seniority": "senior",
+    "years_experience": 7,
+    "summary": "Senior Backend Engineer building high-throughput payment systems and distributed services.",
+    "skills": ["Python", "Go", "PostgreSQL", "Kubernetes", "AWS", "Redis", "distributed systems", "microservices"],
+    "experiences": [
+      { "company": "Acme Corp", "title": "Senior Software Engineer", "highlights": ["Designed payment APIs handling $2B/year in Python and Go.", "Led migration to Kubernetes."] },
+      { "company": "Beta Inc", "title": "Software Engineer", "highlights": ["Built Java microservices on AWS."] }
+    ]
+  },
+  "jobs": [
+    { "gold_rank": 1, "requirements": { "title": "Senior Backend Engineer", "seniority": "senior", "required_skills": ["Python", "distributed systems", "PostgreSQL", "AWS"], "preferred_skills": ["Go"], "responsibilities": ["Design and operate high-throughput payment services."] } },
+    { "gold_rank": 2, "requirements": { "title": "Backend Engineer", "seniority": "mid", "required_skills": ["Python", "microservices", "PostgreSQL"], "responsibilities": ["Build and maintain backend services."] } },
+    { "gold_rank": 3, "requirements": { "title": "Platform Engineer", "seniority": "senior", "required_skills": ["Go", "Kubernetes", "AWS"], "responsibilities": ["Own the internal platform and deployment tooling."] } },
+    { "gold_rank": 4, "requirements": { "title": "Staff Software Engineer, Distributed Systems", "seniority": "staff", "required_skills": ["distributed systems", "Go", "reliability"], "responsibilities": ["Lead architecture of core distributed services."] } },
+    { "gold_rank": 5, "requirements": { "title": "Site Reliability Engineer", "seniority": "senior", "required_skills": ["Python", "Kubernetes", "AWS", "on-call"], "responsibilities": ["Keep production services reliable."] } },
+    { "gold_rank": 6, "requirements": { "title": "Data Engineer", "seniority": "mid", "required_skills": ["Python", "SQL", "Spark", "ETL"], "responsibilities": ["Build data pipelines."] } },
+    { "gold_rank": 7, "requirements": { "title": "Full-Stack Engineer", "seniority": "mid", "required_skills": ["Python", "React", "PostgreSQL"], "responsibilities": ["Build features across the stack."] } },
+    { "gold_rank": 8, "requirements": { "title": "Machine Learning Engineer", "seniority": "senior", "required_skills": ["Python", "PyTorch", "machine learning"], "responsibilities": ["Train and deploy ML models."] } },
+    { "gold_rank": 9, "requirements": { "title": "DevOps Engineer", "seniority": "mid", "required_skills": ["Terraform", "AWS", "CI/CD"], "responsibilities": ["Automate infrastructure."] } },
+    { "gold_rank": 10, "requirements": { "title": "Data Scientist", "seniority": "mid", "required_skills": ["Python", "statistics", "pandas"], "responsibilities": ["Analyse data and build models."] } },
+    { "gold_rank": 11, "requirements": { "title": "iOS Mobile Engineer", "seniority": "senior", "required_skills": ["Swift", "iOS", "UIKit"], "responsibilities": ["Build the iOS app."] } },
+    { "gold_rank": 12, "requirements": { "title": "Frontend Engineer", "seniority": "mid", "required_skills": ["React", "TypeScript", "CSS"], "responsibilities": ["Build web UIs."] } },
+    { "gold_rank": 13, "requirements": { "title": "Technical Product Manager", "seniority": "senior", "required_skills": ["product management", "roadmapping", "stakeholder management"], "responsibilities": ["Own the product roadmap."] } },
+    { "gold_rank": 14, "requirements": { "title": "UX Designer", "seniority": "mid", "required_skills": ["Figma", "user research", "prototyping"], "responsibilities": ["Design user experiences."] } },
+    { "gold_rank": 15, "requirements": { "title": "Enterprise Account Executive", "seniority": "senior", "required_skills": ["sales", "negotiation", "CRM"], "responsibilities": ["Close enterprise deals."] } }
+  ]
+}

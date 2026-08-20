@@ -1,0 +1,20 @@
+Jane Doe
+jane.doe@example.com | +1 (415) 555-0142 | San Francisco, CA
+github.com/janedoe | linkedin.com/in/janedoe
+
+SUMMARY
+Senior Backend Engineer with 7 years building high-throughput payment systems.
+
+EXPERIENCE
+Acme Corp — Senior Software Engineer (Jan 2020 – Present)
+- Designed and shipped payment APIs handling $2B/year in Python and Go.
+- Led migration to Kubernetes, cutting deploy time by 60%.
+
+Beta Inc — Software Engineer (Jun 2017 – Dec 2019)
+- Built Java microservices on AWS for a logistics platform.
+
+SKILLS
+Python, Go, PostgreSQL, Kubernetes, AWS, Redis
+
+EDUCATION
+B.S. in Computer Science, Massachusetts Institute of Technology, 2017

@@ -1,0 +1,31 @@
+{
+  "bullets": [
+    {
+      "text": "At Acme Corp, designed payment APIs handling $2B/year using Python and Go.",
+      "company": "Acme Corp",
+      "skills_used": ["Python", "Go"]
+    },
+    {
+      "text": "Led a Kubernetes migration at Acme Corp that cut deploy time by 60%.",
+      "company": "Acme Corp",
+      "skills_used": ["Kubernetes"]
+    },
+    {
+      "text": "Built microservices on AWS at Beta Inc for a logistics platform.",
+      "company": "Beta Inc",
+      "skills_used": ["AWS"]
+    }
+  ],
+  "answers": [
+    {
+      "question": "Why are you a good fit for this role?",
+      "answer": "I have seven years of backend experience building high-throughput payment systems in Python and Go, including PostgreSQL-backed APIs at Acme Corp, which maps directly to this role.",
+      "grounded_in": ["Acme Corp", "Python", "PostgreSQL"]
+    },
+    {
+      "question": "Describe your most relevant experience for this position.",
+      "answer": "At Acme Corp I designed payment APIs handling $2B/year and led our Kubernetes migration; earlier at Beta Inc I built AWS microservices.",
+      "grounded_in": ["Acme Corp", "Beta Inc", "Kubernetes", "AWS"]
+    }
+  ]
+}

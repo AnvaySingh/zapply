@@ -1,0 +1,13 @@
+{
+  "type": "profile",
+  "fields": {
+    "name": { "kind": "scalar", "value": "Maria Gomez" },
+    "email": { "kind": "scalar", "value": "maria.gomez@example.com" },
+    "location": { "kind": "contains", "value": "Chicago" },
+    "seniority": { "kind": "enum", "value": "staff" },
+    "years_experience": { "kind": "numeric", "value": 10, "tol": 1 },
+    "skills": { "kind": "list", "value": ["JavaScript", "TypeScript", "React", "CSS", "Accessibility", "Webpack"] },
+    "companies": { "kind": "list", "value": ["Nimbus Software", "Craftly"] },
+    "institutions": { "kind": "list", "value": ["University of Illinois Urbana-Champaign"] }
+  }
+}

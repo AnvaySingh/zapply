@@ -1,0 +1,32 @@
+# companies.yaml — the curated list of read-only sources apply-copilot polls.
+# This is mine to control. Every entry is a public, consumption-friendly endpoint
+# (public ATS JSON or an RSS feed). No portal scraping, no login — ever.
+#
+# Each source has a `type` and the fields that type needs:
+#   greenhouse: company (display), board_token (URL slug; defaults to company)
+#   lever:      company (the slug used in the Lever URL)
+#   ashby:      company (display), board_name (URL slug; defaults to company)
+#   rss:        company (label for the feed), url (the feed URL)
+#
+# The endpoints below were verified live when this file was seeded; boards change,
+# so prune/replace freely — that's the point of curating your own list.
+
+sources:
+  - type: greenhouse
+    company: Stripe
+    board_token: stripe
+
+  - type: greenhouse
+    company: GitLab
+    board_token: gitlab
+
+  - type: lever
+    company: spotify
+
+  - type: ashby
+    company: Ramp
+    board_name: ramp
+
+  - type: rss
+    company: We Work Remotely
+    url: https://weworkremotely.com/categories/remote-programming-jobs.rss

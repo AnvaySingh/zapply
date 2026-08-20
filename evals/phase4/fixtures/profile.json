@@ -1,0 +1,29 @@
+{
+  "name": "Jane Doe",
+  "seniority": "senior",
+  "years_experience": 7,
+  "summary": "Senior Backend Engineer building high-throughput payment systems.",
+  "skills": ["Python", "Go", "PostgreSQL", "Kubernetes", "AWS", "Redis"],
+  "experiences": [
+    {
+      "company": "Acme Corp",
+      "title": "Senior Software Engineer",
+      "start_date": "Jan 2020",
+      "end_date": "Present",
+      "highlights": [
+        "Designed payment APIs handling $2B/year in Python and Go.",
+        "Led migration to Kubernetes, cutting deploy time by 60%."
+      ]
+    },
+    {
+      "company": "Beta Inc",
+      "title": "Software Engineer",
+      "start_date": "Jun 2017",
+      "end_date": "Dec 2019",
+      "highlights": ["Built microservices on AWS for a logistics platform."]
+    }
+  ],
+  "education": [
+    { "institution": "Massachusetts Institute of Technology", "degree": "B.S.", "field_of_study": "Computer Science", "graduation_year": 2017 }
+  ]
+}

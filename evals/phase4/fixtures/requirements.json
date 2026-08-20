@@ -1,0 +1,9 @@
+{
+  "title": "Senior Backend Engineer",
+  "company": "Stripe",
+  "seniority": "senior",
+  "min_years_experience": 5,
+  "required_skills": ["Python", "PostgreSQL", "Rust"],
+  "preferred_skills": ["Kafka"],
+  "responsibilities": ["Design and operate high-throughput payment services."]
+}

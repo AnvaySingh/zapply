@@ -1,0 +1,18 @@
+[
+  {
+    "id": "L-201",
+    "text": "Staff Software Engineer",
+    "categories": { "location": "Remote", "team": "Engineering", "commitment": "Full-time" },
+    "hostedUrl": "https://jobs.lever.co/acme/201",
+    "createdAt": 1700000000000,
+    "descriptionPlain": "Same role, different feed."
+  },
+  {
+    "id": "L-202",
+    "text": "Data Scientist",
+    "categories": { "location": "San Francisco", "team": "Data", "commitment": "Full-time" },
+    "hostedUrl": "https://jobs.lever.co/acme/202",
+    "createdAt": 1700000500000,
+    "descriptionPlain": "Crunch numbers."
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "type": "requirements",
+  "fields": {
+    "title": { "kind": "contains", "value": "Senior Backend Engineer" },
+    "company": { "kind": "scalar", "value": "Stripe" },
+    "location": { "kind": "contains", "value": "San Francisco" },
+    "seniority": { "kind": "enum", "value": "senior" },
+    "min_years_experience": { "kind": "numeric", "value": 5, "tol": 0 },
+    "required_skills": { "kind": "list", "value": ["Python", "PostgreSQL", "Kubernetes", "AWS"] },
+    "employment_type": { "kind": "contains", "value": "Full-time" }
+  }
+}

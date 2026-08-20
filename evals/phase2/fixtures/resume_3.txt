@@ -1,0 +1,20 @@
+Maria Gomez
+maria.gomez@example.com | Remote (based in Chicago, IL)
+linkedin.com/in/mariagomez
+
+SUMMARY
+Staff Frontend Engineer with 10 years of experience leading design-system and web platform work.
+
+EXPERIENCE
+Nimbus Software — Staff Frontend Engineer (2019 – Present)
+- Owned the company design system used by 40+ engineers.
+- Built accessible React component libraries with TypeScript.
+
+Craftly — Frontend Engineer (2014 – 2019)
+- Developed customer-facing web apps in JavaScript and React.
+
+SKILLS
+JavaScript, TypeScript, React, CSS, Accessibility, Webpack
+
+EDUCATION
+B.A. in Design, University of Illinois Urbana-Champaign, 2014

@@ -1,0 +1,21 @@
+Senior Backend Engineer
+Stripe — San Francisco, CA (Hybrid)
+
+About the role
+We're looking for a Senior Backend Engineer to build and scale our payments infrastructure.
+
+What you'll do
+- Design and operate high-throughput services in Python and Go.
+- Own reliability and performance of core payment APIs.
+- Mentor engineers and drive technical decisions.
+
+Requirements
+- 5+ years of backend software engineering experience.
+- Strong experience with Python, distributed systems, and PostgreSQL.
+- Experience running services on Kubernetes and AWS.
+
+Nice to have
+- Experience with Go.
+- Familiarity with event-driven architectures (Kafka).
+
+Employment type: Full-time. We are unable to provide visa sponsorship for this role.

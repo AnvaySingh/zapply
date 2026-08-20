@@ -1,0 +1,17 @@
+Raj Patel
+raj.patel@example.com | Austin, TX
+portfolio: rajpatel.dev
+
+SUMMARY
+Data Scientist with 2 years of experience in applied machine learning.
+
+EXPERIENCE
+DataWorks — Data Scientist (Aug 2022 – Present)
+- Built churn-prediction models in Python (scikit-learn, XGBoost).
+- Deployed models to production with Docker and Flask.
+
+SKILLS
+Python, SQL, scikit-learn, XGBoost, Pandas, Docker
+
+EDUCATION
+M.S. in Statistics, University of Texas at Austin, 2022

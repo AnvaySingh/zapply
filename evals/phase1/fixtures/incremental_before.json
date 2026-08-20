@@ -1,0 +1,18 @@
+{
+  "jobs": [
+    {
+      "id": 101,
+      "title": "Staff Software Engineer",
+      "location": { "name": "Remote" },
+      "absolute_url": "https://boards.greenhouse.io/acme/jobs/101",
+      "departments": [{ "name": "Engineering" }]
+    },
+    {
+      "id": 102,
+      "title": "Product Designer",
+      "location": { "name": "New York" },
+      "absolute_url": "https://boards.greenhouse.io/acme/jobs/102",
+      "departments": [{ "name": "Design" }]
+    }
+  ]
+}
