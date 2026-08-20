@@ -11,6 +11,10 @@ resume, drafted screening answers, match rationale) that **you** paste and submi
 This is a learning project built strictly phase by phase. Each phase teaches one applied-AI
 concept and closes with a deterministic **program-gate eval**.
 
+📚 **Docs:** [`CONCEPTS.md`](CONCEPTS.md) — the AI concepts with code pointers + interview
+talking points · [`NOTES.md`](NOTES.md) — the per-phase story · [`ROADMAP.md`](ROADMAP.md) — the
+curriculum.
+
 ## Status
 
 **Phase 5 — Orchestration & the review gate** ✅ One pipeline (ingest → prefilter → extract →
