@@ -150,11 +150,18 @@ uv run uvicorn web.server:app --port 8501
   **Tech-stack** dropdown — each posting classified from its title/text — plus keyword **search**.
 - **Enriched cards**: company avatar, seniority + workplace badges, **salary** (parsed from the
   posting), **posted date**, and skill chips (✓ matches / gaps vs your resume, or the job's tech).
-- **Neptune theme** with a real **light/dark toggle**; matching is **100% local** — no API, no
-  quota, works offline. (The LLM extraction/drafting phases stay in the CLI.)
+- **Generate application packet** — on any matched job, one click drafts a grounded, paste-ready
+  packet (tailored bullets + screening answers + match rationale) through the **faithfulness gate**,
+  shown in a modal with a ✓ "every claim traces to your resume" verdict and a Copy button. This is
+  the copilot doing its real job — everything up to the submit button. (Uses ~2–3 LLM calls.)
+- **AI-analyze** toggle (optional) extracts a structured profile via the LLM for sharper ranking;
+  **Load more** paginates; the server caches each resume so paging never re-embeds or re-calls.
+- **Neptune theme** with a real **light/dark toggle**; browsing/matching is **100% local** — no
+  API, no quota. The LLM is used only for AI-analyze and packet generation.
 - Jobs come from a **snapshot** (`data/`, gitignored); a fresh clone builds it on first run.
 
-> The API: `GET /api/jobs` (filtered browse), `POST /api/match` (resume → ranked), `GET /api/facets`.
+> API: `GET /api/jobs` (browse), `POST /api/match` (resume → ranked), `POST /api/packet`
+> (grounded draft + faithfulness gate), `GET /api/facets`.
 
 ## Layout
 

@@ -119,6 +119,7 @@ function card(j) {
   let right = "";
   if (j.score != null) right += `<div class="score ${scoreClass(j.score)}">${j.score}</div><div class="score-lbl">match</div>`;
   if (j.url) right += `<a class="apply" href="${esc(j.url)}" target="_blank" rel="noopener">Apply ↗</a>`;
+  if (j.score != null) right += `<button class="gen" data-id="${j.id}">✨ Packet</button>`;
 
   const company = esc(j.company) + (loc ? ` · ${esc(loc)}` : "") + ` · ${esc(j.source)}`;
   return `<div class="card">
@@ -204,6 +205,65 @@ async function fetchAndRender(append = false) {
   more.disabled = false;
   more.textContent = "Load more ↓";
   more.hidden = shownEnd >= data.total;
+}
+
+// ---- packet modal ----
+function closeModal() { $("modal").hidden = true; }
+$("modalClose").addEventListener("click", closeModal);
+$("modal").addEventListener("click", (e) => { if (e.target === $("modal")) closeModal(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+$("results").addEventListener("click", (e) => {
+  const btn = e.target.closest(".gen");
+  if (btn) generatePacket(parseInt(btn.dataset.id, 10));
+});
+
+async function generatePacket(id) {
+  $("modal").hidden = false;
+  $("modalBody").innerHTML = `<div class="pk-loading"><div class="spinner"></div>Drafting a grounded packet — this runs the extractor + drafter + faithfulness gate (~30s).</div>`;
+  const fd = new FormData();
+  fd.append("token", state.token || "");
+  fd.append("id", id);
+  let data;
+  try { data = await (await fetch("/api/packet", { method: "POST", body: fd })).json(); }
+  catch { $("modalBody").innerHTML = `<div class="pk-loading">Network error — is the server running?</div>`; return; }
+  if (data.error) { $("modalBody").innerHTML = `<div class="pk-loading">${esc(data.error)}</div>`; return; }
+  renderPacket(data);
+}
+
+function packetMarkdown(d) {
+  let s = `# Application packet — ${d.company} · ${d.title}\n\nMatch: ${d.score}/100 — ${d.rationale}\n\n## Tailored resume bullets\n`;
+  d.bullets.forEach((b) => (s += `- ${b}\n`));
+  s += `\n## Screening answers\n`;
+  d.answers.forEach((a) => (s += `**Q: ${a.question}**\n${a.answer}\n\n`));
+  s += d.faithful ? `\n✓ Faithfulness verified — every claim traces to the resume.\n` : `\n✗ Faithfulness issues: ${(d.violations || []).join("; ")}\n`;
+  return s;
+}
+
+function renderPacket(d) {
+  const bullets = d.bullets.map((b) => `<li>${esc(b)}</li>`).join("");
+  const answers = d.answers.map((a) => `<div class="pk-qa"><div class="pk-q">${esc(a.question)}</div><div class="pk-a">${esc(a.answer)}</div></div>`).join("");
+  const verify = d.faithful
+    ? `<div class="pk-verify pk-ok">✓ Faithfulness gate passed — every claim traces to your resume.${d.missing && d.missing.length ? ` <span style="font-weight:500">Role skills you didn't claim: ${esc(d.missing.join(", "))}.</span>` : ""}</div>`
+    : `<div class="pk-verify pk-bad">✗ Faithfulness gate flagged: ${esc((d.violations || []).join("; "))}</div>`;
+  $("modalBody").innerHTML =
+    `<div class="pk-title">${esc(d.title)}</div>
+     <div class="pk-match">${esc(d.company)} · Match ${d.score}/100 — ${esc(d.rationale)}</div>
+     <div class="pk-h">Tailored resume bullets</div>
+     <ul class="pk-bullets">${bullets}</ul>
+     <div class="pk-h">Screening answers</div>${answers}
+     ${verify}
+     <div class="pk-actions">
+       <button class="btn primary" id="copyPacket">📋 Copy packet</button>
+       ${d.url ? `<a class="btn ghost" href="${esc(d.url)}" target="_blank" rel="noopener">Open application ↗</a>` : ""}
+     </div>
+     <div class="pk-note">Copilot, not autopilot — review, edit, then paste &amp; submit yourself.</div>`;
+  const md = packetMarkdown(d);
+  $("copyPacket").addEventListener("click", () => {
+    navigator.clipboard.writeText(md).then(() => {
+      $("copyPacket").textContent = "✓ Copied";
+      setTimeout(() => ($("copyPacket").textContent = "📋 Copy packet"), 1500);
+    });
+  });
 }
 
 // ---- init ----

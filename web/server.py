@@ -72,6 +72,7 @@ def _updated() -> str:
 def _payload(i: int, score: int | None = None, cand: set[str] | None = None) -> dict:
     j = _JOBS[i]
     out = {
+        "id": i,
         "title": j.title, "company": j.company, "location": j.location or "",
         "source": j.source, "url": j.url or "", "workplace": _CATS[i], "seniority": _SENS[i],
         "salary": parse_salary(j.description), "posted": posted_ago(j),
@@ -174,17 +175,18 @@ async def match(
             return JSONResponse({"error": "No resume text provided."}, status_code=400)
 
         query_text = text
+        profile_obj = None
         if ai:
             try:
                 from apply_copilot.extract import extract_profile
                 from apply_copilot.match import profile_to_text
 
-                profile = extract_profile(text)
-                query_text = profile_to_text(profile) or text
+                profile_obj = extract_profile(text)
+                query_text = profile_to_text(profile_obj) or text
                 profile_info = {
-                    "seniority": profile.seniority.value,
-                    "years": profile.years_experience,
-                    "skills": profile.skills[:16],
+                    "seniority": profile_obj.seniority.value,
+                    "years": profile_obj.years_experience,
+                    "skills": profile_obj.skills[:16],
                 }
             except Exception as exc:  # noqa: BLE001 - quota/no-key etc.; fall back to raw text
                 warning = f"AI analysis unavailable ({type(exc).__name__}); matched on raw resume text."
@@ -192,7 +194,7 @@ async def match(
         cand = extract_skills(text)
         qv = _EMB.encode_one(query_text)
         token = uuid.uuid4().hex
-        _MATCH_CACHE[token] = {"qv": qv, "cand": cand, "profile": profile_info}
+        _MATCH_CACHE[token] = {"qv": qv, "cand": cand, "profile": profile_info, "profile_obj": profile_obj, "text": text}
         if len(_MATCH_CACHE) > 200:  # crude cap
             _MATCH_CACHE.pop(next(iter(_MATCH_CACHE)))
 
@@ -203,6 +205,58 @@ async def match(
     return {
         "total": len(idx), "mode": "matched", "offset": offset, "jobs": jobs_out,
         "token": token, "profile": profile_info, "warning": warning,
+    }
+
+
+@app.post("/api/packet")
+async def packet(token: str = Form(...), id: int = Form(...)):
+    """Grounded application packet for one job: extract Requirements → draft → faithfulness gate.
+
+    Needs a resume (a match token). Uses ~2–3 LLM calls. This is the copilot doing its real job —
+    everything up to the submit button, with a program that verifies the draft didn't lie.
+    """
+    if not token or token not in _MATCH_CACHE or not (0 <= id < len(_JOBS)):
+        return JSONResponse({"error": "Load a resume and pick a job first."}, status_code=400)
+
+    entry = _MATCH_CACHE[token]
+    try:
+        from apply_copilot.draft import check_draft
+        from apply_copilot.draft import draft as draft_fn
+        from apply_copilot.extract import extract_requirements
+        from apply_copilot.match.matcher import Matcher
+
+        profile = entry.get("profile_obj")
+        if profile is None:
+            from apply_copilot.extract import extract_profile
+
+            profile = extract_profile(entry["text"])
+            entry["profile_obj"] = profile  # cache for next time
+
+        job = _JOBS[id]
+        reqs = extract_requirements(f"{job.title}\n\n{job.description}")
+        reqs.company = reqs.company or job.company
+        reqs.title = reqs.title or job.title
+
+        packet = draft_fn(profile, reqs)
+        report = check_draft(packet, profile, reqs)
+        mr = Matcher().score(profile, reqs)
+    except Exception as exc:  # noqa: BLE001 - quota/no-key/parse; surface to the UI
+        return JSONResponse(
+            {"error": f"Could not generate the packet ({type(exc).__name__}). "
+                      f"The daily LLM quota may be exhausted — try again after it resets."}
+        )
+
+    return {
+        "company": reqs.company or job.company,
+        "title": reqs.title or job.title,
+        "url": job.url or "",
+        "score": mr.score,
+        "rationale": mr.rationale,
+        "missing": mr.missing_skills,
+        "bullets": [b.text for b in packet.bullets],
+        "answers": [{"question": a.question, "answer": a.answer} for a in packet.answers],
+        "faithful": report.is_faithful,
+        "violations": [f"{v.where}: {v.kind} — {v.detail}" for v in report.violations],
     }
 
 
