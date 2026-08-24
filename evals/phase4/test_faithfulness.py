@@ -10,9 +10,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from apply_copilot.draft import answer_addresses_question, check_draft
-from apply_copilot.draft.models import DraftPacket
-from apply_copilot.extract.models import Profile, Requirements
+from zapply.draft import answer_addresses_question, check_draft
+from zapply.draft.models import DraftPacket
+from zapply.extract.models import Profile, Requirements
 
 FIXTURES = Path(__file__).parent / "fixtures"
 

@@ -1,6 +1,6 @@
 """Provider-agnostic LLM client.
 
-This is the *seam*: every part of apply-copilot talks to the model through this class, never
+This is the *seam*: every part of zapply talks to the model through this class, never
 through a vendor SDK directly. The client owns two responsibilities and delegates the third:
 
 * **What to call** — two entry points cover everything downstream needs:

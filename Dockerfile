@@ -1,4 +1,4 @@
-# apply-copilot demo web app — container image (works on Hugging Face Spaces, Azure, Fly, a VM…)
+# zapply demo web app — container image (works on Hugging Face Spaces, Azure, Fly, a VM…)
 FROM python:3.12-slim
 
 ENV PYTHONUNBUFFERED=1 \

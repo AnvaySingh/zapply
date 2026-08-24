@@ -18,8 +18,8 @@ from pathlib import Path
 
 import pytest
 
-from apply_copilot.draft import answer_addresses_question, check_draft, draft
-from apply_copilot.extract.models import Profile, Requirements
+from zapply.draft import answer_addresses_question, check_draft, draft
+from zapply.extract.models import Profile, Requirements
 
 from judge import judge_claims
 

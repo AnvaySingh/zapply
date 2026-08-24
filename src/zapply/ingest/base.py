@@ -25,7 +25,7 @@ from .models import JobPosting
 logger = logging.getLogger(__name__)
 
 # A gentle, honest User-Agent. We are a read-only consumer of public endpoints.
-USER_AGENT = "apply-copilot/0.1 (personal job-application copilot; read-only)"
+USER_AGENT = "zapply/0.1 (personal job-application copilot; read-only)"
 DEFAULT_TIMEOUT = 20.0
 
 

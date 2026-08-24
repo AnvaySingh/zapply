@@ -12,12 +12,12 @@ from __future__ import annotations
 
 import pytest
 
-from apply_copilot.draft.faithfulness import FaithfulnessReport, Violation
-from apply_copilot.draft.models import DraftPacket, ScreeningAnswer, TailoredBullet
-from apply_copilot.extract.models import Profile, Requirements, Seniority
-from apply_copilot.ingest.models import JobPosting
-from apply_copilot.match.matcher import MatchResult
-from apply_copilot.orchestrate import (
+from zapply.draft.faithfulness import FaithfulnessReport, Violation
+from zapply.draft.models import DraftPacket, ScreeningAnswer, TailoredBullet
+from zapply.extract.models import Profile, Requirements, Seniority
+from zapply.ingest.models import JobPosting
+from zapply.match.matcher import MatchResult
+from zapply.orchestrate import (
     ApplicationStatus,
     Pipeline,
     PipelineConfig,
@@ -25,7 +25,7 @@ from apply_copilot.orchestrate import (
     ReviewError,
     approve,
 )
-from apply_copilot.packet import NotApprovedError, build_approved_packets, build_packet
+from zapply.packet import NotApprovedError, build_approved_packets, build_packet
 
 POISON_ID = "2"  # the posting whose stub draft is unfaithful
 

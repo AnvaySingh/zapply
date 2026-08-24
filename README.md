@@ -1,4 +1,4 @@
-# apply-copilot
+# Zapply
 
 A personal, local, single-user **job-application copilot** — Employable's brain without its hands.
 It takes you all the way *up to* the submit button and hands you a finished packet (tailored
@@ -17,7 +17,7 @@ curriculum · [`DEPLOY.md`](DEPLOY.md) — hosting the demo.
 
 ## Demo
 
-![apply-copilot — browse jobs, match a resume, AI-analyze, and generate a grounded application packet](docs/demo.gif)
+![zapply — browse jobs, match a resume, AI-analyze, and generate a grounded application packet](docs/demo.gif)
 
 *Browse a live job feed → filter (workplace / seniority / tech) → match your resume → **✨
 AI-analyze** → **Generate packet**: a tailored, paste-ready draft that passes a **programmatic
@@ -81,10 +81,10 @@ no code change:
 
 ```bash
 # Sanity check — no API call, no keys needed
-uv run apply-copilot hello
+uv run zapply hello
 
 # Make one real, traced LLM call (needs your provider's key)
-uv run apply-copilot trace-test
+uv run zapply trace-test
 ```
 
 `trace-test` makes a single `complete()` call through the `llm/` client. If Langfuse keys are set,
@@ -94,16 +94,16 @@ the call shows up as a trace in your Langfuse dashboard — that's the Phase 0 d
 
 ```bash
 # Poll every read-only source in companies.yaml → normalise → dedup → show NEW postings
-uv run apply-copilot ingest
+uv run zapply ingest
 
 # See every unique posting (not just new), cap the table
-uv run apply-copilot ingest --all --limit 15
+uv run zapply ingest --all --limit 15
 
 # Dry run — don't update the incremental-refresh state
-uv run apply-copilot ingest --no-persist
+uv run zapply ingest --no-persist
 
 # Ingest a single pasted/downloaded JD file through the same pipeline
-uv run apply-copilot ingest-file jd.txt --company "Acme" --title "Backend Engineer"
+uv run zapply ingest-file jd.txt --company "Acme" --title "Backend Engineer"
 ```
 
 Curate the sources you poll in [`companies.yaml`](companies.yaml). Every source is a
@@ -113,13 +113,13 @@ public, read-only endpoint (ATS JSON or RSS) — no scraping, no login.
 
 ```bash
 # Resume → structured Profile (native tool-calling, or --backend instructor)
-uv run apply-copilot extract-resume evals/phase2/fixtures/resume_1.txt
+uv run zapply extract-resume evals/phase2/fixtures/resume_1.txt
 
 # JD → structured Requirements
-uv run apply-copilot extract-jd evals/phase2/fixtures/jd_1.txt
+uv run zapply extract-jd evals/phase2/fixtures/jd_1.txt
 
 # Score a resume against a JD: extract both, embed, compare (0–100 + rationale)
-uv run apply-copilot match --resume evals/phase2/fixtures/resume_1.txt \
+uv run zapply match --resume evals/phase2/fixtures/resume_1.txt \
                            --jd evals/phase2/fixtures/jd_1.txt
 ```
 
@@ -131,10 +131,10 @@ uv run apply-copilot match --resume evals/phase2/fixtures/resume_1.txt \
 ```bash
 # Ingest → local prefilter → extract + match + draft the top-K → review → packet.
 # Stops for your approval on each draft; writes approved packets to ./packets/.
-uv run apply-copilot apply --resume my_resume.txt --top-k 3
+uv run zapply apply --resume my_resume.txt --top-k 3
 
 # Non-interactive (auto-approve faithful drafts) — handy for a quick run:
-uv run apply-copilot apply --resume my_resume.txt --top-k 2 --yes
+uv run zapply apply --resume my_resume.txt --top-k 2 --yes
 ```
 
 Only the **top-K** postings get the (LLM-costed) extract + draft, so a ~1,000-posting feed still
@@ -180,7 +180,7 @@ or leak résumé data.
 ## Layout
 
 ```
-src/apply_copilot/
+src/zapply/
 ├── llm/          # provider-agnostic client + Langfuse tracing   (Phase 0 — built)
 ├── ingest/       # ATS JSON / RSS / paste → normalise + dedup     (Phase 1 — built)
 ├── extract/      # resume→Profile, JD→Requirements (structured)   (Phase 2 — built)

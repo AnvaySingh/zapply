@@ -1,10 +1,10 @@
-# CLAUDE.md — apply-copilot
+# CLAUDE.md — Zapply
 
 Persistent context for this repo. Read this fully before doing anything. This is a learning project. The point is not to ship a product — it is for me to build, by hand, the full applied-AI-engineering stack (structured extraction, embeddings, grounded generation, orchestration, evals, observability). Optimise every decision for what it teaches me, not for speed or feature count.
 
 ## What this is
 
-`apply-copilot` is a personal, local, single-user job-application copilot.
+`zapply` is a personal, local, single-user job-application copilot.
 
 It does everything up to the submit button and hands me a finished packet — a tailored resume, drafted screening answers, and a match rationale — which I then paste into the portal and submit myself.
 
@@ -82,13 +82,13 @@ Phase 6 (optional) adds a `[fill]` agent that takes the approved packet and comp
 ## Repo layout (target)
 
 ```
-apply-copilot/
+zapply/
 ├── CLAUDE.md              # this file
 ├── ROADMAP.md             # the phased curriculum
 ├── NOTES.md               # per-phase learning notes (blog raw material)
 ├── pyproject.toml
 ├── .env.example
-├── src/apply_copilot/
+├── src/zapply/
 │   ├── llm/               # provider-agnostic client + tracing
 │   ├── ingest/            # automated: ATS JSON, RSS, job APIs, paste → normalise + dedup
 │   ├── extract/           # resume→Profile, JD→Requirements (structured)

@@ -11,9 +11,9 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
-from apply_copilot.draft.context import build_fact_sheet
-from apply_copilot.extract.instructor_impl import _client_and_model
-from apply_copilot.extract.models import Profile
+from zapply.draft.context import build_fact_sheet
+from zapply.extract.instructor_impl import _client_and_model
+from zapply.extract.models import Profile
 
 
 class Judgment(BaseModel):

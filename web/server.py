@@ -1,4 +1,4 @@
-"""FastAPI backend for the apply-copilot demo web app.
+"""FastAPI backend for the zapply demo web app.
 
 A thin JSON API over the engine — ingestion (Phase 1), embeddings/matching (Phase 3) — plus a
 hand-crafted static SPA (see `web/static/`). Replaces the earlier Streamlit prototype so the UI
@@ -20,7 +20,7 @@ from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from apply_copilot.match import Embedder, cosine
+from zapply.match import Embedder, cosine
 from web.enrich import parse_salary, posted_ago
 from web.jobs import (
     SENIORITY_ORDER,
@@ -42,7 +42,7 @@ TECH_OPTIONS = [
     "Kafka", "Spark", "GraphQL", "Terraform",
 ]
 
-app = FastAPI(title="apply-copilot")
+app = FastAPI(title="zapply")
 
 # --- load the corpus once at import (from disk snapshot + cached vectors) ---
 _EMB = Embedder()  # model loads lazily on first embed (only /api/match needs it)
@@ -197,8 +197,8 @@ async def match(
         profile_obj = None
         if ai:
             try:
-                from apply_copilot.extract import extract_profile
-                from apply_copilot.match import profile_to_text
+                from zapply.extract import extract_profile
+                from zapply.match import profile_to_text
 
                 profile_obj = extract_profile(text)
                 query_text = profile_to_text(profile_obj) or text
@@ -241,14 +241,14 @@ async def packet(token: str = Form(...), id: int = Form(...), access_code: str =
 
     entry = _MATCH_CACHE[token]
     try:
-        from apply_copilot.draft import check_draft
-        from apply_copilot.draft import draft as draft_fn
-        from apply_copilot.extract import extract_requirements
-        from apply_copilot.match.matcher import Matcher
+        from zapply.draft import check_draft
+        from zapply.draft import draft as draft_fn
+        from zapply.extract import extract_requirements
+        from zapply.match.matcher import Matcher
 
         profile = entry.get("profile_obj")
         if profile is None:
-            from apply_copilot.extract import extract_profile
+            from zapply.extract import extract_profile
 
             profile = extract_profile(entry["text"])
             entry["profile_obj"] = profile  # cache for next time

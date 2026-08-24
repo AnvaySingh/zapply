@@ -1,4 +1,4 @@
-# CONCEPTS.md — the applied-AI stack behind apply-copilot
+# CONCEPTS.md — the applied-AI stack behind Zapply
 
 A study + interview-prep companion to this repo. `NOTES.md` tells the *story* of each phase;
 this file is the *reference*: every AI/ML-engineering concept the project uses, in plain
@@ -16,7 +16,7 @@ and the end has a rapid-fire Q&A bank.
 
 ## The big picture (the one-paragraph version)
 
-apply-copilot is a pipeline: **ingest** job postings from read-only sources → **extract**
+zapply is a pipeline: **ingest** job postings from read-only sources → **extract**
 structured data from a resume and each JD → **match** them with embeddings → **draft** tailored,
 *grounded* application text → **human review gate** → **packet** you paste and submit. Every
 stage is closed by a **deterministic program that judges the model's output** — never the model
@@ -30,7 +30,7 @@ the whole thing and the best one-liner to lead with.
 **What it is.** A thin layer that every part of the app calls instead of talking to a vendor SDK
 directly. Swapping models/vendors becomes a config change, not a rewrite.
 
-**How this project uses it.** `src/apply_copilot/llm/client.py` exposes exactly two entry points
+**How this project uses it.** `src/zapply/llm/client.py` exposes exactly two entry points
 — `complete()` (free text) and `complete_structured()` (validated object). `providers.py` has
 two adapters: `AnthropicProvider` (native Anthropic API) and `OpenAICompatibleProvider`
 (anything speaking the OpenAI chat protocol — Gemini, Groq, Ollama, OpenAI). `config.py` picks
@@ -53,7 +53,7 @@ seam also gives you one place to add tracing, retries, and fallbacks.
 you can debug and measure. LLM calls fail *semantically* (a subtly wrong answer, not a stack
 trace), so if you can't replay a call you can't debug it.
 
-**How this project uses it.** `src/apply_copilot/llm/tracing.py` wraps each call in a
+**How this project uses it.** `src/zapply/llm/tracing.py` wraps each call in a
 [Langfuse](https://langfuse.com) "generation" span, *inside the seam*, so instrumentation is
 automatic — you can't make an untraced call. It degrades to a no-op when keys are absent.
 
@@ -79,7 +79,7 @@ never leaves the machine.
 Both are followed by **schema validation** (Pydantic) — the program decides the output is usable.
 
 **How this project uses it.** `complete_structured()` uses forced tool-calling; the extractors
-(`src/apply_copilot/extract/native.py`) turn a resume→`Profile` and a JD→`Requirements`
+(`src/zapply/extract/native.py`) turn a resume→`Profile` and a JD→`Requirements`
 (`extract/models.py`). When Gemini's forced tool-calling flaked on long inputs and returned no
 tool call, the OpenAI-compatible provider now **falls back to JSON mode**
 (`llm/providers.py::_json_mode`, with a lenient parser). We also built a second implementation
@@ -119,7 +119,7 @@ validation error to the prompt. Validation is `response_model.model_validate(...
 **Cosine similarity** measures the angle between two vectors (1 = identical direction). This beats
 keyword overlap ("K8s" vs "Kubernetes", "ML" vs "machine learning").
 
-**How this project uses it.** `src/apply_copilot/match/` — `embed.py` runs a **local**
+**How this project uses it.** `src/zapply/match/` — `embed.py` runs a **local**
 `sentence-transformers` model (`all-MiniLM-L6-v2`, 384-dim), `represent.py` decides *what text*
 to embed (a real modelling lever), `matcher.py` scores a `Profile` vs `Requirements` (0–100) and
 adds a programmatic rationale. Naive-first: in-memory cosine, no vector DB.
@@ -160,7 +160,7 @@ matcher's ordering of 15 hand-ranked roles: **ρ = 0.92**, gated at ≥ 0.6.
 The mechanism is **context construction**, not a polite prompt: you give the model a closed set of
 allowed facts and frame the task as *reframe these*, never *impress me*.
 
-**How this project uses it.** `src/apply_copilot/draft/context.py` builds an explicit **fact
+**How this project uses it.** `src/zapply/draft/context.py` builds an explicit **fact
 sheet** (the only employers/skills the model may use) with hard rules ("never claim a skill the
 candidate lacks, even if the role wants it"). Drafts are *structured* — each bullet self-reports
 the employer and profile-skills it used — so a program can verify them.
@@ -217,7 +217,7 @@ empty/one-word/stock non-answers); true topical relevance is left to the LLM jud
 **What it is.** Composing single-purpose "agents" (each a typed input→output stage) into a
 pipeline, with the *handoffs* validated so no stage silently passes bad data.
 
-**How this project uses it.** `src/apply_copilot/orchestrate/` models `PrefilterAgent →
+**How this project uses it.** `src/zapply/orchestrate/` models `PrefilterAgent →
 ExtractAgent → MatchAgent → DraftAgent`, composed by `Pipeline`, which raises `PipelineError` on a
 malformed handoff (e.g., empty title, out-of-range score).
 

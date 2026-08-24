@@ -11,7 +11,7 @@ from __future__ import annotations
 import re
 from datetime import datetime, timezone
 
-from apply_copilot.ingest.models import JobPosting
+from zapply.ingest.models import JobPosting
 
 # Matches $120,000 - $160,000  /  $120K–$160K  /  $120,000 to $160,000
 _SALARY = re.compile(

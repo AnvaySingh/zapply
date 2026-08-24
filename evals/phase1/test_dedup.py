@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from apply_copilot.ingest import GreenhouseSource, LeverSource, deduplicate
+from zapply.ingest import GreenhouseSource, LeverSource, deduplicate
 
 FIXTURES = Path(__file__).parent / "fixtures"
 

@@ -21,7 +21,7 @@ DEFAULT_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
 @lru_cache(maxsize=2)
 def _load_model(model_name: str):
-    # Imported here so `import apply_copilot.match` doesn't drag in torch until needed.
+    # Imported here so `import zapply.match` doesn't drag in torch until needed.
     from sentence_transformers import SentenceTransformer
 
     return SentenceTransformer(model_name)

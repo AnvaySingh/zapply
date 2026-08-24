@@ -1,4 +1,4 @@
-# ROADMAP.md — apply-copilot
+# ROADMAP.md — Zapply
 
 Seven phases. Each one teaches one applied-AI-engineering (or data-engineering) concept, closes with a program-gate eval (per the core principle in `CLAUDE.md`), and produces the raw material for one dev.to post. Build them in order. Stop at each boundary for review.
 

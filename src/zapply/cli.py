@@ -1,4 +1,4 @@
-"""apply-copilot command-line interface.
+"""zapply command-line interface.
 
 Phase 0 ships two commands:
 
@@ -23,7 +23,7 @@ from .llm import LLMClient, LLMError
 app = typer.Typer(
     add_completion=False,
     no_args_is_help=True,
-    help="apply-copilot — a local job-application copilot (Employable's brain without its hands).",
+    help="zapply — a local job-application copilot (Employable's brain without its hands).",
 )
 console = Console()
 
@@ -31,7 +31,7 @@ console = Console()
 @app.command()
 def hello(name: str = typer.Option("world", help="Who to greet.")) -> None:
     """Print a greeting. No API call — just proves the CLI wiring is live."""
-    console.print(f"[bold green]Hello, {name}![/] apply-copilot v{__version__} is wired up.")
+    console.print(f"[bold green]Hello, {name}![/] zapply v{__version__} is wired up.")
 
 
 @app.command("trace-test")
@@ -349,7 +349,7 @@ def apply(
 @app.command()
 def version() -> None:
     """Print the version."""
-    console.print(f"apply-copilot v{__version__}")
+    console.print(f"zapply v{__version__}")
 
 
 if __name__ == "__main__":  # pragma: no cover

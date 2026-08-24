@@ -7,7 +7,7 @@ no LLM and no network, so they're part of the default `pytest` suite.
 
 from __future__ import annotations
 
-from apply_copilot.extract.models import Education, Experience, Profile, Seniority
+from zapply.extract.models import Education, Experience, Profile, Seniority
 
 from scoring import score_field, score_model
 

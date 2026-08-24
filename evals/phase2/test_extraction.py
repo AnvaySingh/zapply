@@ -19,8 +19,8 @@ from pathlib import Path
 
 import pytest
 
-from apply_copilot.extract import extract_profile, extract_requirements
-from apply_copilot.extract.models import Profile, Requirements
+from zapply.extract import extract_profile, extract_requirements
+from zapply.extract.models import Profile, Requirements
 
 from scoring import score_model
 

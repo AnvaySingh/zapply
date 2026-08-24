@@ -7,7 +7,7 @@ and needs no network for browsing/matching.
 
 from __future__ import annotations
 
-from apply_copilot.match import Embedder
+from zapply.match import Embedder
 from web.jobs import load_or_build_vectors, refresh_snapshot
 
 

@@ -12,8 +12,8 @@ from pathlib import Path
 
 import numpy as np
 
-from apply_copilot.ingest import deduplicate, load_sources
-from apply_copilot.ingest.models import JobPosting
+from zapply.ingest import deduplicate, load_sources
+from zapply.ingest.models import JobPosting
 
 _ROOT = Path(__file__).resolve().parent.parent
 SNAPSHOT = _ROOT / "data" / "jobs_snapshot.json"

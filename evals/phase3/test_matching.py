@@ -11,8 +11,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from apply_copilot.extract.models import Profile, Requirements
-from apply_copilot.match import Matcher
+from zapply.extract.models import Profile, Requirements
+from zapply.match import Matcher
 
 from rank_metrics import spearman
 
