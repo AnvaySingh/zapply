@@ -85,6 +85,17 @@ a { color: var(--accent); text-decoration: none; }
 .resume-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
 .resume-status { color: var(--sub); font-size: .86rem; }
 .resume-status .clear { color: var(--accent); cursor: pointer; font-weight: 600; margin-left: 6px; }
+.ai-toggle { display: inline-flex; align-items: center; gap: 6px; color: var(--sub); font-size: .86rem; font-weight: 600; cursor: pointer; user-select: none; }
+.ai-toggle input { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
+.ai-panel {
+  max-width: 620px; margin: 14px auto 0; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px 16px; font-size: .86rem; color: var(--sub); box-shadow: var(--shadow);
+}
+.ai-panel b { color: var(--text); }
+.ai-panel .warn { color: var(--gap-fg); }
+.ai-panel .chips { margin-top: 8px; }
+.loadmore-wrap { text-align: center; margin-top: 18px; }
+#loadMore { padding: 10px 26px; }
 
 /* ---- buttons ---- */
 .btn {

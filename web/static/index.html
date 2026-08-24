@@ -28,9 +28,13 @@
       <div class="resume-row">
         <button class="btn primary" id="uploadBtn">📄 Upload resume</button>
         <button class="btn ghost" id="sampleBtn">Try a sample</button>
+        <label class="ai-toggle" title="Extract a structured profile via the LLM (1 API call).">
+          <input type="checkbox" id="aiToggle"> ✨ AI-analyze
+        </label>
         <span class="resume-status" id="resumeStatus"></span>
         <input type="file" id="fileInput" accept=".pdf,.txt" hidden>
       </div>
+      <div class="ai-panel" id="aiPanel" hidden></div>
     </header>
 
     <section class="filters">
@@ -46,6 +50,7 @@
 
     <div class="meta" id="meta"></div>
     <main class="results" id="results"></main>
+    <div class="loadmore-wrap"><button class="btn" id="loadMore" hidden>Load more ↓</button></div>
     <footer class="foot">A copilot: it finds & ranks jobs — you review and apply yourself. Sources: public ATS boards + RSS · read-only, no scraping.</footer>
   </div>
 

@@ -6,7 +6,10 @@ const state = {
   tech: new Set(),
   q: "",
   resume: null, // null | {type:'sample'} | {type:'file', file}
-  limit: 25,
+  ai: false,
+  token: null, // server-side cache token for the current resume (avoids re-embed/re-LLM)
+  offset: 0,
+  pageSize: 20,
 };
 
 const AVATAR = ["#525AFF", "#4AB5B5", "#6D8BC0", "#7c86e8", "#2f9e9a", "#5a6cc0", "#4f8fd0", "#8a63c0"];
@@ -43,7 +46,7 @@ function buildPills(container, options, set) {
       if (set.has(opt)) { set.delete(opt); el.classList.remove("active"); }
       else { set.add(opt); el.classList.add("active"); }
       if (container.id === "techPanel") updateTechBtn();
-      fetchAndRender();
+      refresh();
     });
     container.appendChild(el);
   });
@@ -57,11 +60,13 @@ function updateTechBtn() {
 // ---- resume ----
 function setResume(r, label) {
   state.resume = r;
+  state.token = null; // new resume → force fresh embed/analysis
+  if (!r) { $("aiPanel").hidden = true; }
   $("resumeStatus").innerHTML = r
     ? `Ranked to <b>${esc(label)}</b><span class="clear" id="clearResume">✕ clear</span>`
     : "";
   if (r) $("clearResume").addEventListener("click", () => setResume(null));
-  fetchAndRender();
+  refresh();
 }
 $("uploadBtn").addEventListener("click", () => $("fileInput").click());
 $("fileInput").addEventListener("change", (e) => {
@@ -69,13 +74,19 @@ $("fileInput").addEventListener("change", (e) => {
   if (f) setResume({ type: "file", file: f }, f.name);
 });
 $("sampleBtn").addEventListener("click", () => setResume({ type: "sample" }, "sample resume"));
+$("aiToggle").addEventListener("change", (e) => {
+  state.ai = e.target.checked;
+  state.token = null; // toggling AI changes how the resume is represented → re-analyse
+  if (state.resume) refresh();
+});
+$("loadMore").addEventListener("click", loadMore);
 
 // ---- search ----
 let searchTimer;
 $("search").addEventListener("input", (e) => {
   state.q = e.target.value;
   clearTimeout(searchTimer);
-  searchTimer = setTimeout(fetchAndRender, 250);
+  searchTimer = setTimeout(refresh, 250);
 });
 
 // ---- tech dropdown open/close ----
@@ -122,31 +133,77 @@ function card(j) {
   </div>`;
 }
 
-async function fetchAndRender() {
+function refresh() { state.offset = 0; fetchAndRender(false); }
+function loadMore() { state.offset += state.pageSize; fetchAndRender(true); }
+
+function renderAiPanel(data) {
+  const p = $("aiPanel");
+  if (data.profile) {
+    const pr = data.profile;
+    const chips = (pr.skills || []).map((s) => `<span class="chip c-tech">${esc(s)}</span>`).join("");
+    p.innerHTML =
+      `✨ <b>AI read your resume:</b> ${esc(pr.seniority || "—")} · ${pr.years != null ? esc(pr.years) + " yrs" : "—"} · ${(pr.skills || []).length} skills` +
+      `<div class="chips">${chips}</div>` +
+      (data.warning ? `<div class="warn">${esc(data.warning)}</div>` : "");
+    p.hidden = false;
+  } else if (data.warning) {
+    p.innerHTML = `<div class="warn">${esc(data.warning)}</div>`;
+    p.hidden = false;
+  } else {
+    p.hidden = true;
+  }
+}
+
+async function fetchAndRender(append = false) {
   const results = $("results");
-  results.innerHTML = `<div class="spinner"></div>`;
-  const params = { q: state.q, workplace: csv(state.workplace), seniority: csv(state.seniority), tech: csv(state.tech), limit: state.limit };
+  const more = $("loadMore");
+  if (!append) { results.innerHTML = `<div class="spinner"></div>`; more.hidden = true; }
+  else { more.textContent = "Loading…"; more.disabled = true; }
+
+  const params = {
+    q: state.q, workplace: csv(state.workplace), seniority: csv(state.seniority),
+    tech: csv(state.tech), limit: state.pageSize, offset: state.offset,
+  };
 
   let data;
   try {
     if (state.resume) {
       const fd = new FormData();
       Object.entries(params).forEach(([k, v]) => fd.append(k, v));
-      if (state.resume.type === "file") fd.append("file", state.resume.file);
-      else fd.append("sample", "1");
+      if (state.token) {
+        fd.append("token", state.token);
+      } else {
+        if (state.resume.type === "file") fd.append("file", state.resume.file);
+        else fd.append("sample", "1");
+        if (state.ai) fd.append("ai", "1");
+      }
       data = await (await fetch("/api/match", { method: "POST", body: fd })).json();
+      if (data.token) state.token = data.token;
+      renderAiPanel(data);
     } else {
       const qs = new URLSearchParams(params).toString();
       data = await (await fetch("/api/jobs?" + qs)).json();
+      $("aiPanel").hidden = true;
     }
   } catch (err) {
     results.innerHTML = `<div class="empty">Could not load jobs. Is the server running?</div>`;
+    more.hidden = true;
     return;
   }
 
   const mode = data.mode === "matched" ? "ranked by fit to your resume" : "newest first — upload a resume to rank by fit";
-  $("meta").innerHTML = `<b>${data.total}</b> jobs match · showing ${Math.min(data.total, state.limit)} · ${mode}`;
-  results.innerHTML = data.jobs.length ? data.jobs.map(card).join("") : `<div class="empty">No jobs match these filters. Try widening them.</div>`;
+  const shownEnd = state.offset + data.jobs.length;
+  $("meta").innerHTML = `<b>${data.total}</b> jobs match · showing ${Math.min(shownEnd, data.total)} · ${mode}`;
+
+  const html = data.jobs.length
+    ? data.jobs.map(card).join("")
+    : append ? "" : `<div class="empty">No jobs match these filters. Try widening them.</div>`;
+  if (append) results.insertAdjacentHTML("beforeend", html);
+  else results.innerHTML = html;
+
+  more.disabled = false;
+  more.textContent = "Load more ↓";
+  more.hidden = shownEnd >= data.total;
 }
 
 // ---- init ----

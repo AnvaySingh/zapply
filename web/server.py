@@ -13,6 +13,7 @@ from __future__ import annotations
 import io
 import os
 import time
+import uuid
 from pathlib import Path
 
 from fastapi import FastAPI, File, Form, UploadFile
@@ -50,6 +51,10 @@ _VECS = load_or_build_vectors(_JOBS, _EMB)
 _CATS = [workplace_category(j) for j in _JOBS]
 _SENS = [seniority_category(j) for j in _JOBS]
 _SKILLS = [extract_skills(f"{j.title} {j.description[:1200]}") for j in _JOBS]
+
+# Cache of resume-derived state (query vector + candidate skills + AI profile), keyed by a token,
+# so pagination and filter changes reuse it — no repeat embedding or LLM call.
+_MATCH_CACHE: dict[str, dict] = {}
 
 
 def _updated() -> str:
@@ -122,10 +127,26 @@ def facets():
 
 
 @app.get("/api/jobs")
-def jobs(q: str = "", workplace: str = "", seniority: str = "", tech: str = "", limit: int = 12):
+def jobs(q: str = "", workplace: str = "", seniority: str = "", tech: str = "",
+         limit: int = 20, offset: int = 0):
     idx = _filtered(q, workplace, seniority, tech)
     idx.sort(key=_posted_key, reverse=True)
-    return {"total": len(idx), "mode": "browse", "jobs": [_payload(i) for i in idx[:limit]]}
+    page = idx[offset:offset + limit]
+    return {"total": len(idx), "mode": "browse", "offset": offset, "jobs": [_payload(i) for i in page]}
+
+
+async def _read_resume(file: UploadFile | None, sample: str) -> str:
+    if file is not None:
+        data = await file.read()
+        if file.filename and file.filename.lower().endswith(".pdf"):
+            from pypdf import PdfReader
+
+            reader = PdfReader(io.BytesIO(data))
+            return "\n".join((p.extract_text() or "") for p in reader.pages)
+        return data.decode("utf-8", errors="ignore")
+    if sample:
+        return SAMPLE.read_text(encoding="utf-8") if SAMPLE.exists() else ""
+    return ""
 
 
 @app.post("/api/match")
@@ -134,32 +155,55 @@ async def match(
     workplace: str = Form(""),
     seniority: str = Form(""),
     tech: str = Form(""),
-    limit: int = Form(12),
+    limit: int = Form(20),
+    offset: int = Form(0),
     sample: str = Form(""),
+    ai: str = Form(""),
+    token: str = Form(""),
     file: UploadFile | None = File(None),
 ):
-    text = ""
-    if file is not None:
-        data = await file.read()
-        if file.filename and file.filename.lower().endswith(".pdf"):
-            from pypdf import PdfReader
+    warning = None
+    profile_info = None
 
-            reader = PdfReader(io.BytesIO(data))
-            text = "\n".join((p.extract_text() or "") for p in reader.pages)
-        else:
-            text = data.decode("utf-8", errors="ignore")
-    elif sample:
-        text = SAMPLE.read_text(encoding="utf-8") if SAMPLE.exists() else ""
+    if token and token in _MATCH_CACHE:
+        entry = _MATCH_CACHE[token]
+        qv, cand, profile_info = entry["qv"], entry["cand"], entry["profile"]
+    else:
+        text = await _read_resume(file, sample)
+        if not text.strip():
+            return JSONResponse({"error": "No resume text provided."}, status_code=400)
 
-    if not text.strip():
-        return JSONResponse({"error": "No resume text provided."}, status_code=400)
+        query_text = text
+        if ai:
+            try:
+                from apply_copilot.extract import extract_profile
+                from apply_copilot.match import profile_to_text
 
-    cand = extract_skills(text)
-    qv = _EMB.encode_one(text)
+                profile = extract_profile(text)
+                query_text = profile_to_text(profile) or text
+                profile_info = {
+                    "seniority": profile.seniority.value,
+                    "years": profile.years_experience,
+                    "skills": profile.skills[:16],
+                }
+            except Exception as exc:  # noqa: BLE001 - quota/no-key etc.; fall back to raw text
+                warning = f"AI analysis unavailable ({type(exc).__name__}); matched on raw resume text."
+
+        cand = extract_skills(text)
+        qv = _EMB.encode_one(query_text)
+        token = uuid.uuid4().hex
+        _MATCH_CACHE[token] = {"qv": qv, "cand": cand, "profile": profile_info}
+        if len(_MATCH_CACHE) > 200:  # crude cap
+            _MATCH_CACHE.pop(next(iter(_MATCH_CACHE)))
+
     idx = _filtered(q, workplace, seniority, tech)
     scored = sorted(((int(round(max(0.0, cosine(qv, _VECS[i])) * 100)), i) for i in idx), reverse=True)
-    jobs_out = [_payload(i, score=s, cand=cand) for s, i in scored[:limit]]
-    return {"total": len(idx), "mode": "matched", "jobs": jobs_out}
+    page = scored[offset:offset + limit]
+    jobs_out = [_payload(i, score=s, cand=cand) for s, i in page]
+    return {
+        "total": len(idx), "mode": "matched", "offset": offset, "jobs": jobs_out,
+        "token": token, "profile": profile_info, "warning": warning,
+    }
 
 
 @app.get("/")
