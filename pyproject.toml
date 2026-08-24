@@ -18,8 +18,10 @@ dependencies = [
     "instructor>=1.5",
     "sentence-transformers>=3.0",
     "numpy>=1.26",
-    "streamlit>=1.36",
     "pypdf>=4.2",
+    "fastapi>=0.111",
+    "uvicorn>=0.30",
+    "python-multipart>=0.0.9",
 ]
 
 [project.scripts]

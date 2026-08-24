@@ -135,23 +135,26 @@ offered it — and no packet is written without your approval.
 
 ### Demo web app
 
-A polished [Streamlit](https://streamlit.io) UI over the engine: **browse and filter** engineering
-jobs, or **upload a resume** to rank them by fit with per-job skill overlap.
+A custom **FastAPI** backend + a hand-crafted single-page UI (`web/`) over the engine:
+**browse and filter** engineering jobs, or **upload a resume** to rank them by fit with per-job
+skill overlap.
 
 ```bash
-uv run streamlit run web/app.py
+uv run uvicorn web.server:app --port 8501
+# then open http://localhost:8501
 ```
 
-- **Zero-friction browsing** — no resume needed to explore; upload one to switch to fit-ranking.
-- **Faceted filters** (all local, no LLM): **Workplace** (Remote/Hybrid/On-site), **Seniority**
-  (Intern→Manager), and **Tech stack** — each posting is classified from its title/text.
+- **Zero-friction browsing** — no resume needed to explore; upload one (or "Try a sample") to
+  switch to fit-ranking with match scores + skill overlap.
+- **Faceted filters** (all local, no LLM): **Workplace**, **Seniority** (Intern→Manager), and a
+  **Tech-stack** dropdown — each posting classified from its title/text — plus keyword **search**.
 - **Enriched cards**: company avatar, seniority + workplace badges, **salary** (parsed from the
   posting), **posted date**, and skill chips (✓ matches / gaps vs your resume, or the job's tech).
-- **Matching is 100% local** (embeddings on your machine) — no API, no quota, works offline.
-- Jobs come from a **snapshot** (`data/`, gitignored); the sidebar's *Refresh* re-ingests live.
-  First run builds the snapshot + embeddings; after that startup is fast.
-- The optional **"✨ AI-analyze"** toggle extracts a structured profile via the LLM (1 call) and
-  degrades gracefully if the daily quota is out.
+- **Neptune theme** with a real **light/dark toggle**; matching is **100% local** — no API, no
+  quota, works offline. (The LLM extraction/drafting phases stay in the CLI.)
+- Jobs come from a **snapshot** (`data/`, gitignored); a fresh clone builds it on first run.
+
+> The API: `GET /api/jobs` (filtered browse), `POST /api/match` (resume → ranked), `GET /api/facets`.
 
 ## Layout
 

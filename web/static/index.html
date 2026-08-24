@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>apply-copilot</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="brand">🧭 apply<span>·copilot</span></div>
+    <div class="nav-right">
+      <span class="updated" id="updated"></span>
+      <a class="ghlink" href="https://github.com/AnvaySingh" target="_blank" rel="noopener">GitHub ↗</a>
+      <button class="theme-btn" id="themeBtn" title="Toggle theme">🌙</button>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <header class="hero">
+      <h1>Curated engineering roles</h1>
+      <p class="sub">Browse a live feed, or upload your resume to rank jobs by fit. Matching runs locally.</p>
+      <div class="searchbar">
+        <span class="s-ic">🔍</span>
+        <input id="search" placeholder="Search by title, company, or location…" autocomplete="off">
+      </div>
+      <div class="resume-row">
+        <button class="btn primary" id="uploadBtn">📄 Upload resume</button>
+        <button class="btn ghost" id="sampleBtn">Try a sample</button>
+        <span class="resume-status" id="resumeStatus"></span>
+        <input type="file" id="fileInput" accept=".pdf,.txt" hidden>
+      </div>
+    </header>
+
+    <section class="filters">
+      <div class="fgroup" id="workplaceGroup"></div>
+      <div class="filter-divider"></div>
+      <div class="fgroup" id="seniorityGroup"></div>
+      <div class="filter-divider"></div>
+      <div class="tech-dd">
+        <button class="btn" id="techBtn">Tech stack ▾</button>
+        <div class="dd-panel" id="techPanel" hidden></div>
+      </div>
+    </section>
+
+    <div class="meta" id="meta"></div>
+    <main class="results" id="results"></main>
+    <footer class="foot">A copilot: it finds & ranks jobs — you review and apply yourself. Sources: public ATS boards + RSS · read-only, no scraping.</footer>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
