@@ -24,9 +24,18 @@ from jobs import (  # sibling module (web/ on sys.path)
     refresh_snapshot,
     workplace_category,
 )
+from skills import extract_skills, overlap_and_gaps
 
 WORKPLACE_ICON = {"Remote": "🏠", "Hybrid": "🔀", "On-site": "🏢", "Unknown": "❓"}
 WORKPLACE_OPTIONS = ["Remote", "Hybrid", "On-site"]
+
+
+def _chips(labels: list[str], color: str, bg: str) -> str:
+    return " ".join(
+        f"<span style='background:{bg};color:{color};padding:1px 8px;border-radius:10px;"
+        f"font-size:0.72rem;margin:0 4px 4px 0;display:inline-block'>{s}</span>"
+        for s in labels
+    )
 
 _ROOT = Path(__file__).resolve().parent.parent
 SAMPLE_RESUME = (_ROOT / "evals" / "phase2" / "fixtures" / "resume_1.txt")
@@ -134,6 +143,7 @@ with st.expander("Resume text used for matching", expanded=False):
 
 # --- optional AI analysis ---
 query_text = resume_text
+profile = None
 if use_ai:
     with st.spinner("Analyzing your resume with AI…"):
         try:
@@ -148,6 +158,11 @@ if use_ai:
                 st.write(" ".join(f"`{s}`" for s in profile.skills))
         except LLMError as exc:
             st.warning(f"AI analysis unavailable ({exc}). Falling back to matching on raw resume text.")
+
+# --- candidate skills (local, no LLM) for the overlap chips ---
+candidate_skills = extract_skills(resume_text)
+if profile and profile.skills:
+    candidate_skills |= extract_skills(" ".join(profile.skills))
 
 # --- results ---
 st.subheader("3. Matching jobs")
@@ -166,6 +181,17 @@ for score, job, cat in results:
             badge = f"{WORKPLACE_ICON.get(cat, '')} {cat}"
             meta = " · ".join(x for x in (job.company, job.location or None, badge, job.source) if x)
             st.caption(meta)
+
+            overlap, gaps = overlap_and_gaps(candidate_skills, f"{job.title} {job.description[:3000]}")
+            chips_html = ""
+            if overlap:
+                chips_html += "<span style='color:#16a34a;font-size:0.72rem'>✓ matches</span> "
+                chips_html += _chips(overlap[:8], "#065f46", "#bbf7d0")
+            if gaps:
+                chips_html += " <span style='color:#b45309;font-size:0.72rem'>gaps</span> "
+                chips_html += _chips(gaps[:5], "#7c2d12", "#fed7aa")
+            if chips_html:
+                st.markdown(chips_html, unsafe_allow_html=True)
         with right:
             st.markdown(
                 f"<div style='text-align:center'><span style='font-size:2rem;font-weight:700;"
