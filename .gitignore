@@ -28,3 +28,6 @@ __pycache__/
 
 # Generated application packets
 /packets/
+
+# Demo job snapshot (regenerable; may be large)
+/data/

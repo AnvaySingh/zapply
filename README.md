@@ -133,6 +133,22 @@ Only the **top-K** postings get the (LLM-costed) extract + draft, so a ~1,000-po
 fits the daily quota. A draft that fails the faithfulness gate is **blocked** — you're never
 offered it — and no packet is written without your approval.
 
+### Demo web app
+
+A minimal [Streamlit](https://streamlit.io) UI over the engine: upload a resume → get ranked
+matching jobs with apply links.
+
+```bash
+uv run streamlit run web/app.py
+```
+
+- **Matching is 100% local** (embeddings on your machine) — no API, no quota, works offline.
+- Jobs are read from a **snapshot** (`data/jobs_snapshot.json`); the sidebar's *Refresh* button
+  re-ingests live. First run builds the snapshot + embeddings; after that startup is instant.
+- The optional **"✨ AI-analyze"** toggle extracts a structured profile via the LLM (1 call) and
+  degrades gracefully if the daily quota is out.
+- Click **"Use sample resume"** to demo instantly without a file.
+
 ## Layout
 
 ```
