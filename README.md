@@ -135,19 +135,23 @@ offered it — and no packet is written without your approval.
 
 ### Demo web app
 
-A minimal [Streamlit](https://streamlit.io) UI over the engine: upload a resume → get ranked
-matching jobs with apply links.
+A polished [Streamlit](https://streamlit.io) UI over the engine: **browse and filter** engineering
+jobs, or **upload a resume** to rank them by fit with per-job skill overlap.
 
 ```bash
 uv run streamlit run web/app.py
 ```
 
+- **Zero-friction browsing** — no resume needed to explore; upload one to switch to fit-ranking.
+- **Faceted filters** (all local, no LLM): **Workplace** (Remote/Hybrid/On-site), **Seniority**
+  (Intern→Manager), and **Tech stack** — each posting is classified from its title/text.
+- **Enriched cards**: company avatar, seniority + workplace badges, **salary** (parsed from the
+  posting), **posted date**, and skill chips (✓ matches / gaps vs your resume, or the job's tech).
 - **Matching is 100% local** (embeddings on your machine) — no API, no quota, works offline.
-- Jobs are read from a **snapshot** (`data/jobs_snapshot.json`); the sidebar's *Refresh* button
-  re-ingests live. First run builds the snapshot + embeddings; after that startup is instant.
+- Jobs come from a **snapshot** (`data/`, gitignored); the sidebar's *Refresh* re-ingests live.
+  First run builds the snapshot + embeddings; after that startup is fast.
 - The optional **"✨ AI-analyze"** toggle extracts a structured profile via the LLM (1 call) and
   degrades gracefully if the daily quota is out.
-- Click **"Use sample resume"** to demo instantly without a file.
 
 ## Layout
 

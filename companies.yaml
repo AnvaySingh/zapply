@@ -12,21 +12,34 @@
 # so prune/replace freely — that's the point of curating your own list.
 
 sources:
-  - type: greenhouse
-    company: Stripe
-    board_token: stripe
+  # --- Greenhouse ---
+  - { type: greenhouse, company: Stripe, board_token: stripe }
+  - { type: greenhouse, company: GitLab, board_token: gitlab }
+  - { type: greenhouse, company: Airbnb, board_token: airbnb }
+  - { type: greenhouse, company: Coinbase, board_token: coinbase }
+  - { type: greenhouse, company: Cloudflare, board_token: cloudflare }
+  - { type: greenhouse, company: Reddit, board_token: reddit }
+  - { type: greenhouse, company: Robinhood, board_token: robinhood }
+  - { type: greenhouse, company: Samsara, board_token: samsara }
+  - { type: greenhouse, company: Asana, board_token: asana }
+  - { type: greenhouse, company: Twilio, board_token: twilio }
+  - { type: greenhouse, company: Affirm, board_token: affirm }
+  - { type: greenhouse, company: Pinterest, board_token: pinterest }
+  - { type: greenhouse, company: Anthropic, board_token: anthropic }
 
-  - type: greenhouse
-    company: GitLab
-    board_token: gitlab
+  # --- Lever ---
+  - { type: lever, company: spotify }
+  - { type: lever, company: palantir }
 
-  - type: lever
-    company: spotify
+  # --- Ashby (incl. AI labs) ---
+  - { type: ashby, company: Ramp, board_name: ramp }
+  - { type: ashby, company: Linear, board_name: linear }
+  - { type: ashby, company: Replit, board_name: replit }
+  - { type: ashby, company: Baseten, board_name: baseten }
+  - { type: ashby, company: Modal, board_name: modal }
+  - { type: ashby, company: Cohere, board_name: cohere }
+  - { type: ashby, company: ElevenLabs, board_name: elevenlabs }
+  - { type: ashby, company: Perplexity, board_name: perplexity }
 
-  - type: ashby
-    company: Ramp
-    board_name: ramp
-
-  - type: rss
-    company: We Work Remotely
-    url: https://weworkremotely.com/categories/remote-programming-jobs.rss
+  # --- RSS ---
+  - { type: rss, company: We Work Remotely, url: https://weworkremotely.com/categories/remote-programming-jobs.rss }

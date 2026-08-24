@@ -26,6 +26,25 @@ def job_text(job: JobPosting) -> str:
     return f"{job.title}\n{job.description[:1000]}"
 
 
+SENIORITY_ORDER = ["Intern", "Junior", "Mid", "Senior", "Staff+", "Manager"]
+
+
+def seniority_category(job: JobPosting) -> str:
+    """Classify seniority from the title (local, no LLM). Defaults to Mid."""
+    t = f" {job.title.lower()} "
+    if any(k in t for k in ("intern", "internship")):
+        return "Intern"
+    if any(k in t for k in ("vp ", "vice president", "chief", "head of", "director", "manager")):
+        return "Manager"
+    if any(k in t for k in ("principal", "staff", "distinguished", "fellow")):
+        return "Staff+"
+    if any(k in t for k in ("senior", "sr.", " sr ", " lead", "lead ", " iii", " iv", "architect")):
+        return "Senior"
+    if any(k in t for k in ("junior", "jr.", " jr ", "entry", "new grad", "graduate", "associate", "early career")):
+        return "Junior"
+    return "Mid"
+
+
 def workplace_category(job: JobPosting) -> str:
     """Classify a posting as Remote / Hybrid / On-site / Unknown.
 
