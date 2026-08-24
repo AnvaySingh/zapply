@@ -87,6 +87,8 @@ a { color: var(--accent); text-decoration: none; }
 .resume-status .clear { color: var(--accent); cursor: pointer; font-weight: 600; margin-left: 6px; }
 .ai-toggle { display: inline-flex; align-items: center; gap: 6px; color: var(--sub); font-size: .86rem; font-weight: 600; cursor: pointer; user-select: none; }
 .ai-toggle input { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
+.access-code { border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 9px; padding: 7px 12px; font-size: .84rem; width: 130px; outline: none; }
+.access-code:focus { border-color: var(--accent); }
 .ai-panel {
   max-width: 620px; margin: 14px auto 0; background: var(--surface); border: 1px solid var(--border);
   border-radius: 12px; padding: 12px 16px; font-size: .86rem; color: var(--sub); box-shadow: var(--shadow);

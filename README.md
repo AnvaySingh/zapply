@@ -13,7 +13,15 @@ concept and closes with a deterministic **program-gate eval**.
 
 📚 **Docs:** [`CONCEPTS.md`](CONCEPTS.md) — the AI concepts with code pointers + interview
 talking points · [`NOTES.md`](NOTES.md) — the per-phase story · [`ROADMAP.md`](ROADMAP.md) — the
-curriculum.
+curriculum · [`DEPLOY.md`](DEPLOY.md) — hosting the demo.
+
+## Demo
+
+![apply-copilot — browse jobs, match a resume, AI-analyze, and generate a grounded application packet](docs/demo.gif)
+
+*Browse a live job feed → filter (workplace / seniority / tech) → match your resume → **✨
+AI-analyze** → **Generate packet**: a tailored, paste-ready draft that passes a **programmatic
+faithfulness gate** ("every claim traces to your resume"). Neptune theme, light/dark.*
 
 ## Status
 
@@ -162,6 +170,12 @@ uv run uvicorn web.server:app --port 8501
 
 > API: `GET /api/jobs` (browse), `POST /api/match` (resume → ranked), `POST /api/packet`
 > (grounded draft + faithfulness gate), `GET /api/facets`.
+
+**Deploy it (free):** the app ships a `Dockerfile`; see [`DEPLOY.md`](DEPLOY.md) for **Hugging
+Face Spaces** (forever-free, fits the model's RAM), **Azure Container Apps**, and a free
+custom-URL setup. A `PUBLIC_MODE` + `ACCESS_CODE` gate keeps the LLM features (AI-analyze, packet)
+behind a code you share, while browse + match stay open — so a public link can't drain your quota
+or leak résumé data.
 
 ## Layout
 

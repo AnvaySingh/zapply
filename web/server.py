@@ -56,6 +56,18 @@ _SKILLS = [extract_skills(f"{j.title} {j.description[:1200]}") for j in _JOBS]
 # so pagination and filter changes reuse it — no repeat embedding or LLM call.
 _MATCH_CACHE: dict[str, dict] = {}
 
+# --- public deploy gate ---------------------------------------------------------------
+# When PUBLIC_MODE is on AND an ACCESS_CODE is set, the LLM-using features (AI-analyze and
+# packet generation) require that code. Browse + match stay fully open (they're local anyway).
+# This lets you deploy publicly without strangers draining your quota or pushing PII to the LLM.
+ACCESS_CODE = os.environ.get("ACCESS_CODE", "")
+PUBLIC_MODE = os.environ.get("PUBLIC_MODE", "").lower() in {"1", "true", "on", "yes"}
+_GATED = bool(PUBLIC_MODE and ACCESS_CODE)
+
+
+def _ai_allowed(code: str) -> bool:
+    return (not _GATED) or (code == ACCESS_CODE)
+
 
 def _updated() -> str:
     try:
@@ -124,6 +136,7 @@ def facets():
         "tech": TECH_OPTIONS,
         "total": len(_JOBS),
         "updated": _updated(),
+        "gated": _GATED,  # UI shows an access-code field when true
     }
 
 
@@ -161,10 +174,12 @@ async def match(
     sample: str = Form(""),
     ai: str = Form(""),
     token: str = Form(""),
+    access_code: str = Form(""),
     file: UploadFile | None = File(None),
 ):
     warning = None
     profile_info = None
+    ai_locked = False
 
     if token and token in _MATCH_CACHE:
         entry = _MATCH_CACHE[token]
@@ -173,6 +188,10 @@ async def match(
         text = await _read_resume(file, sample)
         if not text.strip():
             return JSONResponse({"error": "No resume text provided."}, status_code=400)
+
+        if ai and not _ai_allowed(access_code):
+            ai = ""  # gated: fall back to raw-text matching, tell the UI why
+            ai_locked = True
 
         query_text = text
         profile_obj = None
@@ -204,17 +223,19 @@ async def match(
     jobs_out = [_payload(i, score=s, cand=cand) for s, i in page]
     return {
         "total": len(idx), "mode": "matched", "offset": offset, "jobs": jobs_out,
-        "token": token, "profile": profile_info, "warning": warning,
+        "token": token, "profile": profile_info, "warning": warning, "ai_locked": ai_locked,
     }
 
 
 @app.post("/api/packet")
-async def packet(token: str = Form(...), id: int = Form(...)):
+async def packet(token: str = Form(...), id: int = Form(...), access_code: str = Form("")):
     """Grounded application packet for one job: extract Requirements → draft → faithfulness gate.
 
     Needs a resume (a match token). Uses ~2–3 LLM calls. This is the copilot doing its real job —
     everything up to the submit button, with a program that verifies the draft didn't lie.
     """
+    if not _ai_allowed(access_code):
+        return JSONResponse({"error": "This feature needs an access code.", "locked": True})
     if not token or token not in _MATCH_CACHE or not (0 <= id < len(_JOBS)):
         return JSONResponse({"error": "Load a resume and pick a job first."}, status_code=400)
 

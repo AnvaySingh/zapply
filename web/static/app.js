@@ -8,6 +8,7 @@ const state = {
   resume: null, // null | {type:'sample'} | {type:'file', file}
   ai: false,
   token: null, // server-side cache token for the current resume (avoids re-embed/re-LLM)
+  accessCode: "",
   offset: 0,
   pageSize: 20,
 };
@@ -139,6 +140,11 @@ function loadMore() { state.offset += state.pageSize; fetchAndRender(true); }
 
 function renderAiPanel(data) {
   const p = $("aiPanel");
+  if (data.ai_locked) {
+    p.innerHTML = `🔒 <b>AI features are locked.</b> Enter the access code above to enable AI-analyze and packet generation.`;
+    p.hidden = false;
+    return;
+  }
   if (data.profile) {
     const pr = data.profile;
     const chips = (pr.skills || []).map((s) => `<span class="chip c-tech">${esc(s)}</span>`).join("");
@@ -177,6 +183,7 @@ async function fetchAndRender(append = false) {
         if (state.resume.type === "file") fd.append("file", state.resume.file);
         else fd.append("sample", "1");
         if (state.ai) fd.append("ai", "1");
+        fd.append("access_code", state.accessCode);
       }
       data = await (await fetch("/api/match", { method: "POST", body: fd })).json();
       if (data.token) state.token = data.token;
@@ -223,6 +230,7 @@ async function generatePacket(id) {
   const fd = new FormData();
   fd.append("token", state.token || "");
   fd.append("id", id);
+  fd.append("access_code", state.accessCode);
   let data;
   try { data = await (await fetch("/api/packet", { method: "POST", body: fd })).json(); }
   catch { $("modalBody").innerHTML = `<div class="pk-loading">Network error — is the server running?</div>`; return; }
@@ -271,6 +279,16 @@ async function init() {
   initTheme();
   const f = await (await fetch("/api/facets")).json();
   $("updated").textContent = `Updated ${f.updated}`;
+  if (f.gated) {
+    const ac = $("accessCode");
+    ac.hidden = false;
+    ac.value = localStorage.getItem("accessCode") || "";
+    state.accessCode = ac.value;
+    ac.addEventListener("input", () => {
+      state.accessCode = ac.value.trim();
+      localStorage.setItem("accessCode", state.accessCode);
+    });
+  }
   buildPills($("workplaceGroup"), f.workplace, state.workplace);
   buildPills($("seniorityGroup"), f.seniority, state.seniority);
   buildPills($("techPanel"), f.tech, state.tech);
