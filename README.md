@@ -4,6 +4,10 @@ A personal, local, single-user **job-application copilot** — Employable's brai
 It takes you all the way *up to* the submit button and hands you a finished packet (tailored
 resume, drafted screening answers, match rationale) that **you** paste and submit yourself.
 
+**🔗 Live demo:** [zapply-az41.onrender.com](https://zapply-az41.onrender.com) (browse + match are
+open; AI-analyze and packet generation are behind an access code) · **📝 Writeup:**
+[the applied-AI stack behind Zapply](docs/blog-zapply.md).
+
 > **Copilot, never autopilot.** Automated *reading* of openings is in scope; automated *writing*
 > (logging into or submitting on a real portal) never is. See [`CLAUDE.md`](CLAUDE.md) for the full
 > guardrail and [`ROADMAP.md`](ROADMAP.md) for the phased curriculum.
@@ -13,7 +17,8 @@ concept and closes with a deterministic **program-gate eval**.
 
 📚 **Docs:** [`CONCEPTS.md`](CONCEPTS.md) — the AI concepts with code pointers + interview
 talking points · [`NOTES.md`](NOTES.md) — the per-phase story · [`ROADMAP.md`](ROADMAP.md) — the
-curriculum · [`DEPLOY.md`](DEPLOY.md) — hosting the demo.
+curriculum · [`DEPLOY.md`](DEPLOY.md) — hosting the demo · [blog writeup](docs/blog-zapply.md) —
+the applied-AI concepts, start to finish.
 
 ## Demo
 
