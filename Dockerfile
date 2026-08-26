@@ -15,12 +15,14 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
-# install dependencies first (cached layer)
+# install dependencies first (cached layer) — WITHOUT the local project (its README/src
+# aren't copied yet), so this layer only rebuilds when deps change
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev
+RUN uv sync --frozen --no-install-project --no-dev
 
-# app source
+# app source, then install the project itself (README.md + src/ now present)
 COPY . .
+RUN uv sync --frozen --no-dev
 
 # bake the job snapshot + embeddings + MiniLM model into the image (needs network at build)
 RUN uv run python -m web.build_data
