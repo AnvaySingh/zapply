@@ -1,0 +1,17 @@
+# Render Blueprint — deploy Zapply's demo web app for free.
+# In the Render dashboard: New → Blueprint → connect the GitHub repo → Apply.
+# Then set ACCESS_CODE and (optionally) GEMINI_API_KEY in the service's Environment tab.
+services:
+  - type: web
+    name: zapply
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/facets
+    envVars:
+      - key: PUBLIC_MODE
+        value: "on"
+      - key: ACCESS_CODE
+        sync: false          # set your own value in the dashboard
+      - key: GEMINI_API_KEY
+        sync: false          # only if you want AI-analyze / packet live

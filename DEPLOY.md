@@ -33,8 +33,11 @@ ONNX-based (~400 MB), it fits.
 5. Deploy. Koyeb builds the image (installs deps + bakes the snapshot & model — a few minutes) and
    serves at `https://<app>-<org>.koyeb.app`.
 
-> **Render** (free) and **Fly.io** deploy the same way from the `Dockerfile`. Koyeb is the simplest
-> no-card, always-on one.
+**Render (free, one-click via the included `render.yaml`):** in the Render dashboard →
+**New → Blueprint** → connect `AnvaySingh/zapply` → **Apply**. It reads `render.yaml`, builds the
+`Dockerfile`, and deploys. Then set `ACCESS_CODE` (and `GEMINI_API_KEY` if you want AI features) in
+the service's **Environment** tab. Free tier spins down when idle and cold-starts on the next visit.
+**Fly.io** deploys the same way from the `Dockerfile`.
 
 ## Option B — Oracle Cloud Always Free (forever-free VM, if capacity is available in your region)
 
