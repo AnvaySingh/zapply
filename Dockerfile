@@ -3,7 +3,7 @@ FROM python:3.12-slim
 
 ENV PYTHONUNBUFFERED=1 \
     HF_HOME=/app/.cache/hf \
-    SENTENCE_TRANSFORMERS_HOME=/app/.cache/st \
+    FASTEMBED_CACHE_PATH=/app/.cache/fastembed \
     PORT=7860
 
 WORKDIR /app

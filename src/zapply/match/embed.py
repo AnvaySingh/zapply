@@ -1,13 +1,12 @@
-"""Local embeddings — the naive-first choice, on purpose.
+"""Local embeddings via ONNX (fastembed) — the deploy-friendly runtime.
 
-We use a small local `sentence-transformers` model (`all-MiniLM-L6-v2`, 384-dim) and compute
-cosine similarity in memory. No hosted embedding API, no vector database. The point is to
-understand what an embedding *is* and where cosine similarity misleads before reaching for
-heavier machinery. The upgrade path (hosted embeddings like Voyage/OpenAI, an ANN index like
-FAISS/Chroma, a cross-encoder re-ranker) is noted in NOTES.md — not built.
+Same model as before (`all-MiniLM-L6-v2`, 384-dim) and the same in-memory cosine, but executed by
+**ONNX Runtime** through `fastembed` instead of PyTorch. That keeps the embeddings numerically
+equivalent (rankings unchanged) while dropping the memory footprint ~5x (~2 GB → ~400 MB), so the
+app fits small free hosts. No hosted embedding API, no vector DB — still naive-first.
 
-The model is loaded lazily and cached, so importing this module is cheap and the (multi-second)
-model load only happens on first real use.
+The model is loaded lazily and cached, so importing this module is cheap and the model load only
+happens on first real use.
 """
 
 from __future__ import annotations
@@ -21,24 +20,25 @@ DEFAULT_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
 @lru_cache(maxsize=2)
 def _load_model(model_name: str):
-    # Imported here so `import zapply.match` doesn't drag in torch until needed.
-    from sentence_transformers import SentenceTransformer
+    # Imported here so `import zapply.match` doesn't drag in the runtime until needed.
+    from fastembed import TextEmbedding
 
-    return SentenceTransformer(model_name)
+    return TextEmbedding(model_name=model_name)
 
 
 class Embedder:
-    """Thin wrapper over a sentence-transformers model producing normalised vectors."""
+    """Thin wrapper over a fastembed (ONNX) model producing normalised vectors."""
 
     def __init__(self, model_name: str = DEFAULT_MODEL) -> None:
         self.model_name = model_name
 
     def encode(self, texts: list[str]) -> np.ndarray:
         model = _load_model(self.model_name)
-        # normalize_embeddings=True → cosine similarity is just a dot product.
-        return np.asarray(
-            model.encode(texts, normalize_embeddings=True, convert_to_numpy=True)
-        )
+        vecs = np.asarray(list(model.embed(texts)), dtype=float)
+        # L2-normalise so cosine similarity is a dot product (matches the old behaviour).
+        norms = np.linalg.norm(vecs, axis=1, keepdims=True)
+        norms[norms == 0] = 1.0
+        return vecs / norms
 
     def encode_one(self, text: str) -> np.ndarray:
         return self.encode([text])[0]

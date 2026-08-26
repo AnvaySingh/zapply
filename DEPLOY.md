@@ -2,7 +2,8 @@
 
 The web app (`web/`) is a FastAPI backend + a static SPA. It ships a `Dockerfile` that bakes the
 job snapshot, embeddings, and the local model into the image, so the container boots fast and
-needs no network for browsing or matching.
+needs no network for browsing or matching. Matching runs on a small **ONNX** model (fastembed) —
+total footprint ~**400 MB**, so it fits the **free 512 MB tiers** (no big VM needed).
 
 ## Environment variables
 
@@ -19,7 +20,23 @@ run AI-analyze / packet (which use your key + send resume text to the LLM).
 
 ---
 
-## Option A — Oracle Cloud Always Free (recommended: truly forever-free, never sleeps)
+## Option A — Koyeb (free, no credit card, always-on) — recommended
+
+Koyeb's free tier runs one always-on web service with **no credit card**. Now that the app is
+ONNX-based (~400 MB), it fits.
+
+1. Sign up at https://www.koyeb.com with **GitHub** (no card).
+2. **Create Web Service → GitHub →** pick `AnvaySingh/zapply`. Koyeb auto-detects the `Dockerfile`.
+3. Instance type: **Free**. Port: **8000** (Koyeb injects `PORT`, which the app binds).
+4. **Environment variables:** `PUBLIC_MODE=on`, `ACCESS_CODE=<code>`, and `GEMINI_API_KEY=<key>`
+   (the key only if you want AI-analyze / packet live).
+5. Deploy. Koyeb builds the image (installs deps + bakes the snapshot & model — a few minutes) and
+   serves at `https://<app>-<org>.koyeb.app`.
+
+> **Render** (free) and **Fly.io** deploy the same way from the `Dockerfile`. Koyeb is the simplest
+> no-card, always-on one.
+
+## Option B — Oracle Cloud Always Free (forever-free VM, if capacity is available in your region)
 
 A real ARM VM — up to **4 CPU / 24 GB RAM**, free forever, no sleep, no Docker limits. ~20 min of
 one-time setup; Oracle asks for a card to verify identity (not charged).
@@ -92,7 +109,7 @@ sudo systemctl restart caddy
 Live at **`https://<public-ip>.nip.io`** — forever-free, HTTPS, never sleeps.
 Update later with: `cd ~/zapply && git pull && uv run python -m web.build_data && sudo systemctl restart zapply`.
 
-## Option B — Hugging Face Spaces (only if your account shows the free "CPU basic" hardware)
+## Option C — Hugging Face Spaces (only if your account shows the free "CPU basic" hardware)
 
 HF's free **CPU basic** tier gives **2 vCPU / 16 GB RAM** — enough for the embedding model, with a
 persistent public URL. (Free Spaces sleep after ~48h idle and cold-start on the next visit.)
@@ -101,8 +118,8 @@ persistent public URL. (Free Spaces sleep after ~48h idle and cold-start on the 
 2. In the Space's **`README.md`**, put this front matter at the very top:
    ```yaml
    ---
-   title: zapply
-   emoji: 🧭
+   title: Zapply
+   emoji: ⚡
    colorFrom: indigo
    colorTo: blue
    sdk: docker
@@ -120,7 +137,7 @@ persistent public URL. (Free Spaces sleep after ~48h idle and cold-start on the 
 5. The Space builds the image (installs deps + bakes data/model — a few minutes) and serves at
    `https://<you>-zapply.hf.space`.
 
-## Option C — Azure Container Apps (connects to a DevOps track; ~free for a month on the $200 credit)
+## Option D — Azure Container Apps (connects to a DevOps track; ~free for a month on the $200 credit)
 
 Scale-to-zero serverless containers, HTTPS + domain included. Give it ~**4 GiB**.
 
@@ -136,14 +153,14 @@ az containerapp update -n zapply -g zapply-rg \
   --set-env-vars GEMINI_API_KEY=secretref:gemini
 ```
 
-> Use **Container Apps**, not **Functions** — a long-lived Torch model doesn't fit the
-> function model. An always-on 4 GiB container is ~$15–40/mo after the free credit.
+> Use **Container Apps**, not **Functions** — a long-lived in-memory model doesn't fit the
+> function model. An always-on container is ~$15–40/mo after the free credit.
 
-## Option D — any Docker host / VM
+## Option E — any Docker host / VM
 
 `docker build -t zapply . && docker run -p 7860:7860 -e PUBLIC_MODE=on -e ACCESS_CODE=code zapply`
-Works on Fly.io, Google Cloud Run (`gcloud run deploy --source . --memory 4Gi`), or a paid Render
-instance. (Free 512 MB tiers can't fit PyTorch as-is.)
+Works on Fly.io, Google Cloud Run (`gcloud run deploy --source . --memory 1Gi`), Render, or any
+VM — the ONNX build fits small free tiers (see Option A).
 
 ## Local
 

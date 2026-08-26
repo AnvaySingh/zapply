@@ -36,7 +36,7 @@ LLM only on the top-K. End-to-end contract eval in `evals/phase5/`.
 (no skill/employer claimed outside the profile) is the real gate; an LLM judge + relevance floor
 are signals. Deterministic gate in `evals/phase4/` (the live drafting test is opt-in).
 
-**Phase 3 — Semantic matching** ✅ Local `sentence-transformers` embeddings of `Profile` vs
+**Phase 3 — Semantic matching** ✅ Local embeddings (`all-MiniLM-L6-v2` via ONNX/`fastembed`) of `Profile` vs
 `Requirements`, cosine → 0–100 score + a grounded, programmatic rationale. Spearman
 rank-correlation eval (ρ = 0.92 vs hand-ranked pairs) in `evals/phase3/`.
 
@@ -165,7 +165,8 @@ uv run uvicorn web.server:app --port 8501
 - **AI-analyze** toggle (optional) extracts a structured profile via the LLM for sharper ranking;
   **Load more** paginates; the server caches each resume so paging never re-embeds or re-calls.
 - **Neptune theme** with a real **light/dark toggle**; browsing/matching is **100% local** — no
-  API, no quota. The LLM is used only for AI-analyze and packet generation.
+  API, no quota (a small **ONNX** model, ~400 MB, so it deploys on free tiers). The LLM is used
+  only for AI-analyze and packet generation.
 - Jobs come from a **snapshot** (`data/`, gitignored); a fresh clone builds it on first run.
 
 > API: `GET /api/jobs` (browse), `POST /api/match` (resume → ranked), `POST /api/packet`

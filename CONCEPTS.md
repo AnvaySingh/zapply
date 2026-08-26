@@ -120,7 +120,7 @@ validation error to the prompt. Validation is `response_model.model_validate(...
 keyword overlap ("K8s" vs "Kubernetes", "ML" vs "machine learning").
 
 **How this project uses it.** `src/zapply/match/` — `embed.py` runs a **local**
-`sentence-transformers` model (`all-MiniLM-L6-v2`, 384-dim), `represent.py` decides *what text*
+`all-MiniLM-L6-v2` model via ONNX (`fastembed`, 384-dim), `represent.py` decides *what text*
 to embed (a real modelling lever), `matcher.py` scores a `Profile` vs `Requirements` (0–100) and
 adds a programmatic rationale. Naive-first: in-memory cosine, no vector DB.
 
