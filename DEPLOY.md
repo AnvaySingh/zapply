@@ -171,6 +171,20 @@ VM — the ONNX build fits small free tiers (see Option A).
 uv run uvicorn web.server:app --port 8501   # no gate; all features open with your .env key
 ```
 
+## Keeping the feed fresh (daily)
+
+The job snapshot is baked into the image at build time, so the deployed app only refreshes when
+it's rebuilt. To refresh it daily, trigger a redeploy on a schedule with the included workflow
+(`.github/workflows/refresh.yml`):
+
+1. Render → your service → **Settings → Deploy Hook** → copy the URL.
+2. GitHub repo → **Settings → Secrets and variables → Actions** → new secret
+   `RENDER_DEPLOY_HOOK` = that URL.
+
+The workflow then pings it every morning (06:00 UTC), which re-runs `web.build_data` and re-ingests
+fresh jobs. You can also run it on demand from the **Actions** tab. (A once-a-day rebuild stays well
+within Render's free build minutes.)
+
 ---
 
 ## Getting your own URL (custom domain) for free

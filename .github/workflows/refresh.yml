@@ -1,0 +1,32 @@
+# Daily refresh of the deployed job feed.
+#
+# The live app bakes the job snapshot into its image at build time, so it only refreshes when the
+# container is rebuilt. This workflow triggers a Render redeploy once a day, which re-runs
+# web.build_data and re-ingests fresh jobs (the "Updated X ago" stamp resets to today).
+#
+# ONE-TIME SETUP:
+#   1. Render -> your service -> Settings -> Deploy Hook -> copy the URL.
+#   2. GitHub repo -> Settings -> Secrets and variables -> Actions -> New repository secret:
+#        name:  RENDER_DEPLOY_HOOK
+#        value: <the deploy hook URL>
+#   You can also run it on demand from the Actions tab (Run workflow).
+
+name: Refresh job feed
+
+on:
+  schedule:
+    - cron: "0 6 * * *"   # every day at 06:00 UTC
+  workflow_dispatch: {}    # manual trigger button in the Actions tab
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render redeploy (re-ingests fresh jobs)
+        run: |
+          if [ -z "${{ secrets.RENDER_DEPLOY_HOOK }}" ]; then
+            echo "RENDER_DEPLOY_HOOK secret is not set — see this file's setup notes."
+            exit 1
+          fi
+          curl -fsS -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+          echo "Triggered Render deploy — the feed will refresh once the build finishes."
